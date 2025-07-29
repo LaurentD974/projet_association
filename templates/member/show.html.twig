@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil du membre{% endblock %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ asset('css/member.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="member-card">
+  <div class="member-info">
+    <h2>{{ member.nom }} {{ member.prenom }}</h2>
+    <p><strong>Métier :</strong> {{ member.metier }}</p>
+    <p><strong>Gâche 1 :</strong> {{ member.fonction1 }}</p>
+    <p><strong>Gâche 2 :</strong> {{ member.fonction2 }}</p>
+    <p><strong>Téléphone :</strong> {{ member.telephone }}</p>
+    <p><strong>Email :</strong> {{ member.email }}</p>
+    <p><strong>Statut :</strong> {{ member.statut }}</p>
+  </div>
+  <div class="member-photo">
+    {% if member.photo %}
+      <img src="{{ asset('images/' ~ member.photo) }}" alt="Photo de {{ member.nom }} {{ member.prenom }}">
+    {% else %}
+      <div class="placeholder">Pas de photo</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

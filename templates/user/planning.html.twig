@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Planning{% endblock %}
+
+{% block stylesheets %}
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+  <h2>Planning de l'association</h2>
+  <div id="calendar"></div>
+{% endblock %}
+
+{% block javascripts %}
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const calendarEl = document.getElementById('calendar');
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: '/api/events'
+      });
+      calendar.render();
+    });
+  </script>
+{% endblock %}

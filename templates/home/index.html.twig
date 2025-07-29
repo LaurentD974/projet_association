@@ -1,0 +1,82 @@
+{# templates/home.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+  <header>
+    <div class="header-left">
+      <a href="https://www.compagnons-du-devoir.com/" target="_blank" rel="noopener">
+        <img
+          src="{{ asset('image/aocdtf-logo.svg') }}"
+          alt="Logo des Compagnons du Devoir"
+          class="logo"
+        />
+      </a>
+    </div>
+    <div class="header-center">
+      <h1 class="site-title">
+        Association Ouvrière des Compagnons du Devoir et du Tour de France<br />
+        <span class="ile" aria-label="île">🏝️</span> Île de la Réunion
+        <span class="palmier" aria-label="Palmier">🌴</span>
+      </h1>
+    </div>
+    <div class="header-right">
+      <button class="btn">Contact</button>
+      {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        <a href="{{ path('app_logout') }}" class="btn">Se déconnecter</a>
+      {% else %}
+        <a href="{{ path('app_login') }}" class="btn">Se connecter</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main>
+    <section class="content-section">
+      <div class="text-block">
+        <h2>Qui sommes-nous ?</h2>
+        <p>
+          L’Association Ouvrière des Compagnons du Devoir et du Tour de France (AOCDTF)
+          est une association loi de 1901, reconnue d’utilité publique. Elle réunit des
+          hommes et des femmes de métier autour d’un même idéal : permettre à chacun
+          de s’accomplir dans et par son métier.<br /><br />
+
+          Elle transmet des savoir-faire techniques et des valeurs humaines comme la
+          solidarité, la fraternité et la générosité.<br /><br />
+
+          Grâce à la qualité de sa formation, à ses expériences en entreprise et à son
+          ouverture à l’international, l’AOCDTF a intégré la Conférence des grandes écoles
+          en 2014.<br /><br />
+
+          Le compagnonnage est une expérience humaine, culturelle et professionnelle,
+          reconnue depuis 2010 par l’Unesco comme patrimoine culturel immatériel.
+        </p>
+      </div>
+      <div class="image-block">
+        <img
+          src="{{ asset('image/Photo-de-groupe-CFA-Tours-768x768.jpg') }}"
+          alt="Photo de groupe des Compagnons du Devoir"
+        />
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2025 AOCDTF - Île de la Réunion 🌴 | Tous droits réservés</p>
+      <p>
+        <a href="mailto:provincial.la-reunion@compagnons-du-devoir.com">
+          provincial.la-reunion@compagnons-du-devoir.com
+        </a> |
+        <a href="https://www.compagnons-du-devoir.com/" target="_blank" rel="noopener">
+          Site officiel
+        </a>
+      </p>
+      <div class="social-icons">
+        <a href="#"><img src="{{ asset('image/facebook-icon.png') }}" alt="Icône Facebook" /></a>
+        <a href="#"><img src="{{ asset('image/instagram-icon.png') }}" alt="Icône Instagram" /></a>
+        <a href="#"><img src="{{ asset('image/linkedin-icon.png') }}" alt="Icône LinkedIn" /></a>
+      </div>
+    </div>
+  </footer>
+{% endblock %}

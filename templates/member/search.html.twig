@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h2>Recherche dynamique des membres</h2>
+<div class="header-actions">
+  <a href="{{ path('app_logout') }}" class="btn btn-danger">Se déconnecter</a>
+  <a href="{{ path('app_planning') }}" class="btn btn-primary">Voir le planning</a>
+</div>
+<form id="filter-form">
+    <select name="metier" id="metier-select">
+        <option value="">Tous les métiers</option>
+    </select>
+
+    <select name="ville" id="ville-select">
+        <option value="">Toutes les villes</option>
+    </select>
+
+    <select name="fonction1" id="fonction-select">
+        <option value="">Toutes les fonctions</option>
+    </select>
+</form>
+
+<ul id="member-results">
+  <li>Les résultats s’afficheront ici...</li>
+</ul>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const metierSelect = document.getElementById('metier-select');
+    const villeSelect = document.getElementById('ville-select');
+    const fonctionSelect = document.getElementById('fonction-select');
+    const resultList = document.getElementById('member-results');
+    const form = document.getElementById('filter-form');
+
+    // Charger les options de filtres
+    fetch('/api/filters')
+      .then(response => response.json())
+      .then(data => {
+        data.metiers.forEach(m => {
+          metierSelect.innerHTML += `<option value="${m}">${m}</option>`;
+        });
+        data.villes.forEach(v => {
+          villeSelect.innerHTML += `<option value="${v}">${v}</option>`;
+        });
+        data.fonctions.forEach(f => {
+          fonctionSelect.innerHTML += `<option value="${f}">${f}</option>`;
+        });
+      });
+
+    // Fonction d'affichage des résultats
+    function fetchMembers() {
+      const params = new URLSearchParams(new FormData(form)).toString();
+      fetch('/api/members?' + params)
+        .then(response => response.json())
+        .then(data => {
+          resultList.innerHTML = '';
+          if (data.length === 0) {
+            resultList.innerHTML = '<li>Aucun résultat.</li>';
+          } else {
+            data.forEach(member => {
+              let cardHTML = `
+                <li>
+                  <div class="member-card" data-id="${member.id}">
+                    <div class="member-header">
+                      <h3>${member.nom} ${member.prenom}</h3>
+                      <p class="metier">Métier : ${member.metier}</p>
+                    </div>
+                    <div class="member-body">
+                      <p><strong>Statut :</strong> ${member.statut}</p>
+                      ${member.fonction1 ? `<p><strong>Fonction 1 :</strong> ${member.fonction1}</p>` : ""}
+                      ${member.fonction2 ? `<p><strong>Fonction 2 :</strong> ${member.fonction2}</p>` : ""}
+                      ${member.ville ? `<p><strong>Ville :</strong> ${member.ville}</p>` : ""}
+                    </div>
+                  </div>
+                </li>
+              `;
+              resultList.innerHTML += cardHTML;
+            });
+
+            // Attacher le clic après création des cartes
+            document.querySelectorAll('.member-card').forEach(card => {
+              card.addEventListener('click', () => {
+                const id = card.dataset.id;
+                window.location.href = `/member/show/${id}`;
+              });
+            });
+          }
+        });
+    }
+
+    // Chargement initial des membres
+    fetchMembers();
+
+    // Mise à jour des résultats à chaque changement
+    form.addEventListener('change', fetchMembers);
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+.member-card {
+  display: flex;
+  padding: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  max-width: 900px;
+  margin: 2rem auto;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.member-info {
+  flex: 1;
+  padding-right: 2rem;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.member-photo img {
+  width: 200px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.placeholder {
+  width: 200px;
+  height: 200px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-style: italic;
+}

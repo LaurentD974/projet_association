@@ -1,0 +1,11 @@
+<h2>{{ event.title }}</h2>
+<p>{{ event.location }} - {{ event.startDate|date('d/m/Y') }}</p>
+
+<h4>Participants :</h4>
+<ul>
+  {% for user in event.participants %}
+    <li>{{ user.email }}</li>
+  {% else %}
+    <li>Aucun participant.</li>
+  {% endfor %}
+</ul>
