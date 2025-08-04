@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des événements{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="mb-4 text-primary">📋 Tous les événements</h1>
+
+    <a href="{{ path('admin_events_new') }}" class="btn btn-primary mb-3">➕ Créer un événement</a>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Titre</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Validé</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.startDate|date('d/m/Y H:i') }}</td>
+                    <td>{{ event.type }}</td>
+                    <td>{{ event.isValidated ? '✅' : '❌' }}</td>
+                    <td>
+                        <a href="{{ path('admin_events_edit', {id: event.id}) }}" class="btn btn-sm btn-warning">✏️</a>
+                        <form method="post" action="{{ path('admin_events_delete', {id: event.id}) }}" style="display:inline;" onsubmit="return confirm('Confirmer la suppression ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                            <button class="btn btn-sm btn-danger">🗑️</button>
+                        </form>
+                        {% if not event.isValidated %}
+                            <a href="{{ path('admin_events_validate_one', {id: event.id}) }}" class="btn btn-sm btn-success">✅</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5">Aucun événement trouvé.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">⬅️ Retour au dashboard</a>
+</div>
+{% endblock %}

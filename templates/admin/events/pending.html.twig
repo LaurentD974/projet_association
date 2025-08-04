@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Événements à valider{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="mb-4 text-success">🕒 Événements en attente de validation</h1>
+
+    {% if events is empty %}
+        <div class="alert alert-info">Aucun événement à valider.</div>
+    {% else %}
+        <ul class="list-group mb-4">
+            {% for event in events %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ event.title }}</strong><br>
+                        <small>{{ event.startDate|date('d/m/Y H:i') }} — {{ event.location }}</small>
+                    </div>
+                    <div class="btn-group">
+                        <a href="{{ path('admin_events_validate_one', {id: event.id}) }}" class="btn btn-sm btn-success">✅ Valider</a>
+                        <a href="{{ path('admin_events_edit', {id: event.id}) }}" class="btn btn-sm btn-warning">✏️ Modifier</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">⬅️ Retour au dashboard</a>
+</div>
+{% endblock %}

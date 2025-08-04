@@ -6,10 +6,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use App\Repository\EventRepository;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\Event;
+
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\EventRepository;
+use App\Entity\Event;
+use App\Form\EventType;
 
 class EventController extends AbstractController
 {
@@ -18,29 +20,86 @@ class EventController extends AbstractController
     {
         $events = $repo->findBy(['isValidated' => true]);
 
-        $data = array_map(fn($e) => [
-            'title' => $e->getTitle(),
-            'start' => $e->getStartDate()->format('Y-m-d'),
-            'url'   => $this->generateUrl('event_show', ['id' => $e->getId()])
-        ], $events);
+        $data = [];
+
+        foreach ($events as $event) {
+            $data[] = [
+                'title' => $event->getTitle(),
+                'start' => $event->getStartDate()->format('c'),
+                'end'   => $event->getEndDate() ? $event->getEndDate()->format('c') : null,
+                'url'   => $this->generateUrl('event_detail', ['id' => $event->getId()]),
+                'extendedProps' => [
+                    'location'     => $event->getLocation(),
+                    'type'         => $event->getType(),
+                    'description'  => $event->getDescription(),
+                    'is_validated' => $event->isValidated(),
+                    'proposed_by'  => $event->getProposedBy() ? [
+                        'nom'    => $event->getProposedBy()->getFirstName(),
+                        'prenom' => $event->getProposedBy()->getLastName()
+                    ] : null
+                ]
+            ];
+        }
 
         return new JsonResponse($data);
     }
 
-    #[Route('/subscribe/{id}', name: 'event_subscribe')]
+    #[Route('/subscribe/{id}', name: 'event_subscribe', methods: ['POST'])]
     public function subscribe(Event $event, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
 
         if (!$user) {
+            $this->addFlash('error', 'Vous devez être connecté pour vous inscrire.');
             return $this->redirectToRoute('app_login');
         }
 
-        $event->addParticipant($user);
+        if ($event->getParticipants()->contains($user)) {
+            $this->addFlash('warning', 'Vous êtes déjà inscrit à cet événement.');
+        } else {
+            $event->addParticipant($user);
+            $em->persist($event);
+            $em->flush();
+
+            $this->addFlash('success', 'Inscription réussie !');
+        }
+
+        return $this->redirectToRoute('event_detail', ['id' => $event->getId()]);
+    }
+
+    #[Route('/event/{id}', name: 'event_detail')]
+    public function detail(int $id, EventRepository $eventRepository): Response
+    {
+        $event = $eventRepository->find($id);
+
+        if (!$event) {
+            throw $this->createNotFoundException("L'événement avec l'ID $id n'existe pas.");
+        }
+
+        return $this->render('event/detail.html.twig', [
+            'event' => $event
+        ]);
+    }
+    #[Route('/unsubscribe/{id}', name: 'event_unsubscribe', methods: ['POST'])]
+public function unsubscribe(Event $event, EntityManagerInterface $em): Response
+{
+    $user = $this->getUser();
+
+    if (!$user) {
+        $this->addFlash('error', 'Vous devez être connecté pour vous désinscrire.');
+        return $this->redirectToRoute('app_login');
+    }
+
+    if ($event->getParticipants()->contains($user)) {
+        $event->removeParticipant($user);
+        $em->persist($event);
         $em->flush();
 
-        $this->addFlash('success', 'Inscription réussie.');
-        return $this->redirectToRoute('user_planning');
+        $this->addFlash('success', 'Vous avez été désinscrit de l’événement.');
+    } else {
+        $this->addFlash('warning', 'Vous n’étiez pas inscrit à cet événement.');
     }
-}
 
+    return $this->redirectToRoute('event_detail', ['id' => $event->getId()]);
+}
+}

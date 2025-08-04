@@ -2,26 +2,39 @@
 
 {% block title %}Profil du membre{% endblock %}
 
-{% block stylesheets %}
-  <link rel="stylesheet" href="{{ asset('css/member.css') }}">
-{% endblock %}
-
 {% block body %}
-<div class="member-card">
+
+<div class="member-header">
+  <h1 class="member-title">Profil détaillé de {{ member.nom }} {{ member.prenom }}</h1>
+  <div class="member-actions">
+    <a href="{{ path('user_search') }}" class="btn btn-outline-primary">🔙 Trombinoscope</a>
+    <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
+  </div>
+</div>
+
+<div class="member-card2">
   <div class="member-info">
     <h2>{{ member.nom }} {{ member.prenom }}</h2>
     <p><strong>Métier :</strong> {{ member.metier }}</p>
-    <p><strong>Gâche 1 :</strong> {{ member.fonction1 }}</p>
-    <p><strong>Gâche 2 :</strong> {{ member.fonction2 }}</p>
+    <p><strong>Gâche(s) :</strong> {{ member.fonction1 }} {{ member.fonction2 }}</p>
+    <p><strong>Etat :</strong> {{ member.statut }} {{ member.position }}</p>
+    <p><strong>Nom de province :</strong> {{ member.nomprovince }} {{ member.nomcompagnon }}</p>
     <p><strong>Téléphone :</strong> {{ member.telephone }}</p>
     <p><strong>Email :</strong> {{ member.email }}</p>
-    <p><strong>Statut :</strong> {{ member.statut }}</p>
+    <p><strong>Adresse :</strong> {{ member.adresse1 }}</p>
+    <p><strong>Complément :</strong> {{ member.adresse2 }}</p>
+    <p><strong>Code postal :</strong> {{ member.codepostale }}</p>
+    <p><strong>Ville :</strong> {{ member.ville }}</p>
   </div>
-  <div class="member-photo">
+
+  <div class="member-photo2">
     {% if member.photo %}
-      <img src="{{ asset('images/' ~ member.photo) }}" alt="Photo de {{ member.nom }} {{ member.prenom }}">
+      <img src="{{ asset('uploads/photos/' ~ member.photo) }}"
+           alt="Photo de {{ member.nom }} {{ member.prenom }}"
+           onerror="this.onerror=null;this.src='{{ asset('image/default-avatar.png') }}';">
     {% else %}
-      <div class="placeholder">Pas de photo</div>
+      <img src="{{ asset('image/default-avatar.png') }}"
+           alt="Photo par défaut de {{ member.nom }} {{ member.prenom }}">
     {% endif %}
   </div>
 </div>

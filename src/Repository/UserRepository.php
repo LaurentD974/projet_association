@@ -105,7 +105,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             $qb->andWhere('u.ville = :ville')->setParameter('ville', $filters['ville']);
         }
 
-        if (!empty($filters['fonction'])) {
+        if (!empty($filters['fonction1'])) {
             $qb->andWhere('u.fonction1 = :fonction1')->setParameter('fonction1', $filters['fonction1']);
         }
 

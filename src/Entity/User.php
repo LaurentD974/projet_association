@@ -6,6 +6,9 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\Event;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -75,28 +78,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
+    private Collection $eventsParticipated;
+
+    public function __construct()
+    {
+        $this->eventsParticipated = new ArrayCollection();
+    }
+
     // === Méthodes standards ===
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
+    public function getEmail(): ?string { return $this->email; }
+    public function setEmail(string $email): static { $this->email = $email; return $this; }
 
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-        return $this;
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
+    public function getUserIdentifier(): string { return (string) $this->email; }
 
     public function getRoles(): array
     {
@@ -105,22 +102,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-        return $this;
-    }
+    public function setRoles(array $roles): static { $this->roles = $roles; return $this; }
 
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-        return $this;
-    }
+    public function getPassword(): ?string { return $this->password; }
+    public function setPassword(string $password): static { $this->password = $password; return $this; }
 
     public function __serialize(): array
     {
@@ -132,7 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[\Deprecated]
     public function eraseCredentials(): void {}
 
-    // === Getters/Setters des nouveaux champs ===
+    // === Getters/Setters des champs personnalisés ===
 
     public function getPrenom(): ?string { return $this->prenom; }
     public function setPrenom(?string $prenom): static { $this->prenom = $prenom; return $this; }
@@ -181,4 +166,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getPhoto(): ?string { return $this->photo; }
     public function setPhoto(?string $photo): static { $this->photo = $photo; return $this; }
+
+    // === Relation avec Event ===
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEventsParticipated(): Collection
+    {
+        return $this->eventsParticipated;
+    }
+
+    public function addEventParticipated(Event $event): self
+    {
+        if (!$this->eventsParticipated->contains($event)) {
+            $this->eventsParticipated->add($event);
+            $event->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventParticipated(Event $event): self
+    {
+        if ($this->eventsParticipated->removeElement($event)) {
+            $event->removeParticipant($this);
+        }
+
+        return $this;
+    }
 }

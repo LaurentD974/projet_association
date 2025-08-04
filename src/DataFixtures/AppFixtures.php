@@ -28,7 +28,7 @@ class AppFixtures extends Fixture
         // === Membres ROLE_USER ===
         for ($i = 1; $i <= 10; $i++) {
             $user = new User();
-            $user->setEmail("membre$i@asso.fr");
+            $user->setEmail("user$i@asso.fr");
             $user->setRoles(['ROLE_USER']);
             $user->setPassword($this->hasher->hashPassword($user, 'userpass'));
 

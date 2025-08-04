@@ -41,7 +41,7 @@ public function filterUsers(Request $request, UserRepository $userRepository): J
     $filters = [
         'metier' => $request->query->get('metier'),
         'ville' => $request->query->get('ville'),
-        'fonction' => $request->query->get('fonction'),
+        'fonction1' => $request->query->get('fonction1'),
     ];
 
     // Appel du repo

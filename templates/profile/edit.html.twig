@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>👤 Modifier mon profil</h2>
+        <a href="{{ path('user_search') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+
+    {# Messages flash #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label == 'info' ? 'info' : (label == 'danger' ? 'danger' : 'success') }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {{ form_start(form) }}
+    <div class="row gy-4">
+        {# Colonne photo #}
+        <div class="col-12 col-md-4">
+            <div class="card h-100">
+                <div class="card-header">📷 Photo de profil</div>
+                <div class="card-body text-center">
+                    {{ form_widget(form.photo, {'attr': {'class': 'form-control', 'id': 'photoUpload'}}) }}
+                    <img id="previewImage"
+                         src="{{ asset(user.photo ? 'uploads/photos/' ~ user.photo : 'images/default-avatar.png') }}"
+                         alt="Aperçu"
+                         class="img-fluid mt-2 rounded shadow-sm">
+                </div>
+            </div>
+        </div>
+
+        {# Colonne infos personnelles #}
+        <div class="col-12 col-md-8">
+            <div class="card h-100">
+                <div class="card-header">📋 Informations personnelles</div>
+                <div class="card-body">
+                    <div class="row gy-3">
+                        <div class="col-12">
+                            <label class="form-label">👤 Nom complet</label>
+                            <input type="text" class="form-control" value="{{ user.prenom }} {{ user.nom }}" disabled>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            {{ form_row(form.adresse1) }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            {{ form_row(form.adresse2) }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            {{ form_row(form.code_postale) }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            {{ form_row(form.ville) }}
+                        </div>
+                        <div class="col-12">
+                            {{ form_label(form.telephone) }}
+                            {{ form_errors(form.telephone) }}
+                            {{ form_widget(form.telephone, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': '+262 692 12 34 56',
+                                    'pattern': '^\\+?[0-9\\s\\-\\.\\(\\)]+$',
+                                    'title': 'Veuillez entrer un numéro de téléphone valide.'
+                                }
+                            }) }}
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    <h5 class="mt-3">🔐 Sécurité</h5>
+                    <h6 class="text-muted">❗❗ Saisi du mot de passe actuel obligatoire pour valider les modifications❗❗</h6>
+                    <div class="row gy-3 mt-2">
+                        <div class="col-12">
+                            {{ form_row(form.currentPassword) }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            {{ form_row(form.plainPassword.first) }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            {{ form_row(form.plainPassword.second) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-end mt-4">
+        <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+    </div>
+    {{ form_end(form) }}
+</div>
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const photoInput = document.getElementById('photoUpload');
+        if (photoInput) {
+            photoInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const preview = document.getElementById('previewImage');
+                        if (preview) {
+                            preview.src = event.target.result;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                const currentPasswordInput = form.querySelector('input[name$="[currentPassword]"]');
+                if (currentPasswordInput && currentPasswordInput.value.trim() === '') {
+                    e.preventDefault();
+                    alert('⚠️ Veuillez saisir votre mot de passe actuel.');
+                    currentPasswordInput.focus();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

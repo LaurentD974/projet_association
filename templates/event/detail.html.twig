@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail de l'événement - {{ event.title }}{% endblock %}
+
+{% block body %}
+  <div class="container mt-5">
+    <div class="d-flex justify-content-end mb-3">
+      <a href="{{ path('user_search') }}" class="btn btn-outline-primary me-2">🔙 Trombinoscope</a>
+      <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
+    </div>
+
+    <h1 class="mb-4">{{ event.title }}</h1>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <p><strong>Type :</strong> {{ event.type }}</p>
+        <p><strong>Lieu :</strong> {{ event.location }}</p>
+
+        {% if event.description %}
+          <p><strong>Description :</strong><br>{{ event.description|nl2br }}</p>
+        {% endif %}
+
+        <hr>
+        <p><strong>Début :</strong> {{ event.startDate|date('d/m/Y H:i') }}</p>
+
+        {% if event.endDate %}
+          <p><strong>Fin :</strong> {{ event.endDate|date('d/m/Y H:i') }}</p>
+        {% else %}
+          <p><strong>Fin :</strong> Non précisée</p>
+        {% endif %}
+
+        {% if event.proposedBy %}
+          <p><strong>Proposé par :</strong> {{ event.proposedBy.nom }} {{ event.proposedBy.prenom }}</p>
+        {% endif %}
+
+        <p>
+          <strong>Statut :</strong>
+          {% if event.isValidated %}
+            ✅ Validé
+          {% else %}
+            ❌ Non validé
+          {% endif %}
+        </p>
+
+    {% if event.participants|length > 0 %}
+  <p><strong>Nombre de participants :</strong> {{ event.participants|length }}</p>
+{% else %}
+  <p><strong>Participants :</strong> Aucun inscrit pour le moment.</p>
+{% endif %}
+      </div>
+    </div>
+
+    <div class="card border-info">
+      <div class="card-header bg-info text-white">
+        <div class="row">
+          <div class="col-md-6">📅 Ajouter à mon agenda</div>
+          <div class="col-md-6 text-end">✍️ S'inscrire à l'événement</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <!-- Section gauche : Ajouter à l'agenda -->
+          <div class="col-md-6 mb-3 mb-md-0">
+            <div class="d-flex flex-wrap gap-2">
+              <a href="https://calendar.google.com/calendar/render?action=TEMPLATE
+                  &text={{ event.title|url_encode }}
+                  &dates={{ event.startDate|date('Ymd\\THis') }}/{{ event.endDate|date('Ymd\\THis') }}
+                  &details={{ event.description|url_encode }}
+                  &location={{ event.location|url_encode }}"
+                 target="_blank"
+                 class="btn btn-success">
+                Google Agenda
+              </a>
+
+              <a href="https://outlook.live.com/calendar/0/deeplink/compose?
+                  subject={{ event.title|url_encode }}
+                  &startdt={{ event.startDate|date('Y-m-d\\TH:i:s') }}
+                  &enddt={{ event.endDate|date('Y-m-d\\TH:i:s') }}
+                  &body={{ event.description|url_encode }}
+                  &location={{ event.location|url_encode }}"
+                 target="_blank"
+                 class="btn btn-primary">
+                Outlook
+              </a>
+
+              <a href="{{ path('event_ics', { id: event.id }) }}"
+                 class="btn btn-outline-secondary">
+                Télécharger ICS
+              </a>
+            </div>
+          </div>
+
+          <!-- Section droite : Inscription/Désinscription -->
+          <div class="col-md-6">
+            {% if app.user %}
+              {% if event.participants.contains(app.user) %}
+                <form method="post" action="{{ path('event_unsubscribe', { id: event.id }) }}">
+                  <button type="submit" class="btn btn-outline-danger">Se désinscrire</button>
+                </form>
+              {% else %}
+                <form method="post" action="{{ path('event_subscribe', { id: event.id }) }}">
+                  <button type="submit" class="btn btn-outline-info">S'inscrire</button>
+                </form>
+              {% endif %}
+            {% else %}
+              <p class="text-muted">Connectez-vous pour vous inscrire à l’événement.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord Gâcheur{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ path('home') }}">🏠 Retour à l'accueil</a>
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="btn btn-outline-light" href="{{ path('app_logout') }}">🔒 Se déconnecter</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- SVG pour icône de succès -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.97 11.03a.75.75 0 0 0 1.07 0l3.992-3.992a.75.75 0 0 0-1.06-1.06L7.5 9.439 5.53 7.47a.75.75 0 0 0-1.06 1.06l2.5 2.5z"/>
+  </symbol>
+</svg>
+
+<div class="container">
+
+  <!-- ✅ Message flash de confirmation -->
+  {% for message in app.flashes('success') %}
+    <div class="alert alert-success d-flex align-items-center" role="alert">
+      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Succès :">
+        <use xlink:href="#check-circle-fill"/>
+      </svg>
+      <div>{{ message }}</div>
+    </div>
+  {% endfor %}
+
+  <h1 class="mb-4 text-center text-success">Tableau de bord Gâcheur</h1>
+
+  <div class="row g-4">
+    <!-- 📅 Proposer un événement -->
+    <div class="col-md-3">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body text-center d-flex flex-column h-100">
+          <div>
+            <h5 class="card-title">📅 Proposer un événement</h5>
+            <p class="card-text">Soumettez un événement au planning.</p>
+          </div>
+          <a href="{{ path('event_propose') }}" class="btn btn-success mt-auto">Proposer</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔍 Voir le trombinoscope -->
+    <div class="col-md-3">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body text-center d-flex flex-column h-100">
+          <div>
+            <h5 class="card-title">🔍 Voir le trombinoscope</h5>
+            <p class="card-text">Consultez les membres de l'association.</p>
+          </div>
+          <a href="{{ path('user_search') }}" class="btn btn-primary mt-auto">Accéder</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📆 Voir le planning -->
+    <div class="col-md-3">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body text-center d-flex flex-column h-100">
+          <div>
+            <h5 class="card-title">📆 Voir le planning</h5>
+            <p class="card-text">Consultez les événements à venir.</p>
+          </div>
+          <a href="{{ path('app_planning') }}" class="btn btn-info mt-auto">Accéder</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📋 Événements de mon métier -->
+    <div class="col-md-3">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body text-center d-flex flex-column h-100">
+          <div>
+            <h5 class="card-title">📋 Événements de mon métier</h5>
+            <p class="card-text">Voir les événements liés à votre métier et les inscrits.</p>
+          </div>
+          <a href="{{ path('event_by_profession') }}" class="btn btn-secondary mt-auto">Consulter</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

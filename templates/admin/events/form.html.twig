@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ event is defined ? 'Modifier un événement' : 'Créer un événement' }}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="mb-4 text-primary">
+        {{ event is defined ? '✏️ Modifier un événement' : '➕ Créer un événement' }}
+    </h1>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+            {{ form_start(form) }}
+
+            <div class="mb-3">
+                {{ form_label(form.title) }}
+                {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.title) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                {{ form_errors(form.description) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.location) }}
+                {{ form_widget(form.location, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.location) }}
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.startDate) }}
+                    {{ form_widget(form.startDate, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.startDate) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_label(form.endDate) }}
+                    {{ form_widget(form.endDate, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.endDate) }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.type) }}
+                {{ form_widget(form.type, {'attr': {'class': 'form-select'}}) }}
+                {{ form_errors(form.type) }}
+            </div>
+
+            <div class="form-check mb-3">
+                {{ form_widget(form.isValidated, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(form.isValidated, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                {{ form_errors(form.isValidated) }}
+            </div>
+
+            <button class="btn btn-primary">💾 Enregistrer</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <a href="{{ path('admin_events_list') }}" class="btn btn-outline-secondary mt-3">⬅️ Retour à la liste</a>
+</div>
+{% endblock %}

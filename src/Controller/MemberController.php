@@ -34,7 +34,7 @@ public function show($id, UserRepository $userRepository): Response
     ]);
 }
 
-    #[Route('/search', name: 'member_search')]
+    #[Route('/search', name: 'user_search')]
     public function search(Request $request, MemberRepository $repo): Response
     {
         $metier = $request->query->get('metier');
@@ -108,4 +108,13 @@ public function show($id, UserRepository $userRepository): Response
             'villes' => $villes,
         ]);
     }
+    #[Route('/members', name: 'member_page')]
+public function showMembers(UserRepository $userRepository): Response
+{
+    $members = $userRepository->findMembers();
+
+    return $this->render('member/search.html.twig', [
+        'members' => $members,
+    ]);
+}
 }

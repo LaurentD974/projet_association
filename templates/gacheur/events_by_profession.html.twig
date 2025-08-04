@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Événements liés à votre métier{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Événements pour le métier : {{ app.user.metier }}</h1>
+
+        {% if events is empty %}
+            <div class="alert alert-info">
+                Aucun événement trouvé pour votre métier.
+            </div>
+        {% else %}
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Titre</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Lieu</th>
+                        <th>Statut</th>
+                        <th>Inscrits</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                        <tr>
+                            <td>{{ event.title }}</td>
+                            <td>{{ event.description }}</td>
+                            <td>{{ event.startDate|date('d/m/Y H:i') }}</td>
+                            <td>{{ event.location }}</td>
+                            <td>
+                                {% if event.isValidated %}
+                                    <span class="badge bg-success">Validé</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">En attente</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if event.participants is empty %}
+                                    <em>Aucun inscrit</em>
+                                {% else %}
+                                    <ul class="list-unstyled mb-0">
+                                        {% for participant in event.participants %}
+                                            <li>{{ participant.nom ?? participant.prenom ?? participant.email }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <a href="{{ path('gacheur_dashboard') }}" class="btn btn-secondary mt-3">← Retour au tableau de bord</a>
+    </div>
+{% endblock %}

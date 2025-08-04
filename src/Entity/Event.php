@@ -6,6 +6,7 @@ use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
@@ -13,34 +14,49 @@ class Event
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank]
     private ?string $title = null;
 
-    #[ORM\Column(length: 100)]
-    private ?string $type = null;
+    #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank]
+    private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank]
     private ?string $location = null;
 
     #[ORM\Column(type: 'datetime')]
+    #[Assert\NotNull]
     private ?\DateTimeInterface $startDate = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    private ?User $proposedBy = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $endDate = null;
+
+    #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\Choice(choices: ['Corporatif', 'Communautaire'], message: 'Choisissez un type valide.')]
+    private ?string $type = null;
 
     #[ORM\Column(type: 'boolean')]
-    private ?bool $isValidated = null;
+    private bool $isValidated = false;
 
-    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $proposedBy = null;
+
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'eventsParticipated')]
+    #[ORM\JoinTable(name: 'event_participants')]
     private Collection $participants;
 
     public function __construct()
     {
         $this->participants = new ArrayCollection();
     }
+
+    // Getters & Setters
 
     public function getId(): ?int
     {
@@ -58,14 +74,14 @@ class Event
         return $this;
     }
 
-    public function getType(): ?string
+    public function getDescription(): ?string
     {
-        return $this->type;
+        return $this->description;
     }
 
-    public function setType(string $type): self
+    public function setDescription(string $description): self
     {
-        $this->type = $type;
+        $this->description = $description;
         return $this;
     }
 
@@ -91,18 +107,29 @@ class Event
         return $this;
     }
 
-    public function getProposedBy(): ?User
+    public function getEndDate(): ?\DateTimeInterface
     {
-        return $this->proposedBy;
+        return $this->endDate;
     }
 
-    public function setProposedBy(?User $proposedBy): self
+    public function setEndDate(?\DateTimeInterface $endDate): self
     {
-        $this->proposedBy = $proposedBy;
+        $this->endDate = $endDate;
         return $this;
     }
 
-    public function isValidated(): ?bool
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function isValidated(): bool
     {
         return $this->isValidated;
     }
@@ -113,6 +140,20 @@ class Event
         return $this;
     }
 
+    public function getProposedBy(): ?User
+    {
+        return $this->proposedBy;
+    }
+
+    public function setProposedBy(?User $user): self
+    {
+        $this->proposedBy = $user;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
     public function getParticipants(): Collection
     {
         return $this->participants;
@@ -121,8 +162,9 @@ class Event
     public function addParticipant(User $user): self
     {
         if (!$this->participants->contains($user)) {
-            $this->participants[] = $user;
+            $this->participants->add($user);
         }
+
         return $this;
     }
 

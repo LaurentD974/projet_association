@@ -4,21 +4,176 @@
 
 {% block stylesheets %}
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <style>
+    .fc-toolbar-title {
+      font-size: 1.5rem;
+      color: #2c3e50;
+    }
+    #calendar {
+      max-width: 900px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    .titre-planning {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 2rem;
+      color: #34495e;
+    }
+    .fc-event-time {
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    .fc-event-title {
+      font-size: 0.85rem;
+      color: #f9f9f9;
+    }
+    .planning-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin: 10px 30px 0 0;
+    }
+    .planning-actions .btn {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+  </style>
 {% endblock %}
 
 {% block body %}
-  <h2>Planning de l'association</h2>
+  <div class="planning-actions">
+    <a href="{{ path('user_search') }}" class="btn btn-outline-primary">🔙 Trombinoscope</a>
+    <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
+    </div>
+
+  <h2 class="titre-planning">Planning de l'association</h2>
   <div id="calendar"></div>
 {% endblock %}
 
 {% block javascripts %}
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const calendarEl = document.getElementById('calendar');
       const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        events: '/api/events'
+        locale: 'fr',
+        titleFormat: { year: 'numeric', month: 'long' },
+        events: '/api/events',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        eventContent: function(arg) {
+          const timeEl = document.createElement('div');
+          timeEl.classList.add('fc-event-time');
+          timeEl.textContent = arg.timeText;
+
+          const titleEl = document.createElement('div');
+          titleEl.classList.add('fc-event-title');
+          titleEl.textContent = arg.event.title;
+
+          return { domNodes: [timeEl, titleEl] };
+        },
+        eventDidMount: function(info) {
+          const e = info.event;
+          const props = e.extendedProps;
+
+          let description = `
+            <strong>${e.title}</strong><br>
+            🕒 Heure : ${info.timeText}<br>
+            📅 Début : ${e.start.toLocaleString()}<br>
+            📍 Lieu : ${props.location || 'Non précisé'}<br>
+            🏷️ Type : ${props.type || 'Non spécifié'}<br>
+            📃 Description : ${props.description || 'Pas de description'}
+          `;
+          tippy(info.el, {
+            content: description,
+            allowHTML: true,
+            theme: 'light',
+            animation: 'fade',
+            placement: 'top'
+          });
+        },
+        eventClick: function(info) {
+          const e = info.event;
+          const props = e.extendedProps;
+
+          const startDate = new Date(e.start);
+          const endDate = new Date(startDate.getTime() + 4 * 60 * 60 * 1000); // 4h par défaut
+
+          const pad = v => v.toString().padStart(2, '0');
+          const formatGoogle = date =>
+            date.getUTCFullYear() +
+            pad(date.getUTCMonth() + 1) +
+            pad(date.getUTCDate()) + 'T' +
+            pad(date.getUTCHours()) +
+            pad(date.getUTCMinutes()) +
+            '00Z';
+
+          const gStart = formatGoogle(startDate);
+          const gEnd = formatGoogle(endDate);
+          const title = encodeURIComponent(e.title);
+          const location = encodeURIComponent(props.location || '');
+          const details = encodeURIComponent(
+            `${props.description || 'Pas de description'}\nType: ${props.type || 'Non spécifié'}`
+          );
+
+          const googleLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${gStart}/${gEnd}&details=${details}&location=${location}`;
+          const outlookLink = `https://outlook.live.com/owa/?rru=addevent&subject=${title}&location=${location}&body=${details}&startdt=${startDate.toISOString()}&enddt=${endDate.toISOString()}`;
+
+          const modal = document.createElement('div');
+          modal.innerHTML = `
+            <div style="padding:20px; font-family: Arial, sans-serif;">
+              <h3 style="margin-top:0;">${e.title}</h3>
+              <p><strong>Début :</strong> ${startDate.toLocaleDateString()}</p>
+              <p><strong>Fin :</strong> ${endDate.toLocaleString()}</p>
+              <p><strong>Lieu :</strong> ${props.location || 'Non renseigné'}</p>
+              <p><strong>Type :</strong> ${props.type || 'Non précisé'}</p>
+              <p><strong>Description :</strong> ${props.description || 'Pas de description'}</p>
+              <hr>
+              <p>
+                📆 <a href="${googleLink}" target="_blank">Ajouter à Google Agenda</a><br>
+                📧 <a href="${outlookLink}" target="_blank">Ajouter à Outlook</a>
+              </p>
+            </div>
+          `;
+          Object.assign(modal.style, {
+            position: 'fixed',
+            top: '20%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#fff',
+            border: '1px solid #ccc',
+            padding: '20px',
+            zIndex: 9999,
+            boxShadow: '0 0 20px rgba(0,0,0,0.2)',
+            borderRadius: '8px',
+            maxWidth: '400px',
+          });
+          document.body.appendChild(modal);
+
+          document.addEventListener('click', function hideModal(ev) {
+            if (!modal.contains(ev.target)) {
+              modal.remove();
+              document.removeEventListener('click', hideModal);
+            }
+          });
+        },
+        eventColor: '#27ae60',
+        eventDisplay: 'block',
+        loading: function(isLoading) {
+          calendarEl.classList.toggle('loading', isLoading);
+        }
       });
       calendar.render();
     });
