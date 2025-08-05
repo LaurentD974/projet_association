@@ -33,9 +33,15 @@ class ProfileController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Gestion de la photo
-            $photoFile = $form->get('photo')->getData();
+            // 🔐 Vérification du mot de passe actuel
+            $currentPassword = $form->get('currentPassword')->getData();
+            if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
+                $this->addFlash('danger', '❌ Mot de passe actuel incorrect.');
+                return $this->redirectToRoute('app_profile');
+            }
 
+            // 📸 Gestion de la photo
+            $photoFile = $form->get('photo')->getData();
             if ($photoFile) {
                 $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
@@ -46,32 +52,25 @@ class ProfileController extends AbstractController
                         $this->getParameter('profile_photos_directory'),
                         $newFilename
                     );
+                    $user->setPhoto($newFilename);
+                    $this->addFlash('info', '📸 Photo mise à jour avec succès.');
                 } catch (FileException $e) {
                     $this->addFlash('danger', 'Erreur lors de l\'upload de la photo.');
-                    return $this->redirectToRoute('app_profile_success');
                 }
-
-                $user->setPhoto($newFilename);
             }
 
-            // Gestion du mot de passe
+            // 🔄 Mise à jour du mot de passe si nécessaire
             $plainPassword = $form->get('plainPassword')->getData();
-            $currentPassword = $form->get('currentPassword')->getData();
-
             if ($plainPassword) {
-                if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
-                    $this->addFlash('danger', '❌ Mot de passe actuel incorrect.');
-                    return $this->redirectToRoute('app_profile_success');
-                }
-
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
                 $this->addFlash('info', '🔐 Mot de passe mis à jour avec succès.');
             }
 
+            // 💾 Enregistrement
             $em->flush();
             $this->addFlash('success', '✅ Profil mis à jour avec succès.');
-            return $this->redirectToRoute('app_profile_success');
+            return $this->redirectToRoute('app_profile');
         }
 
         return $this->render('profile/edit.html.twig', [

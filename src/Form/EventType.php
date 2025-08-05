@@ -87,4 +87,17 @@ class EventType extends AbstractType
             'data_class' => Event::class,
         ]);
     }
+    public function listEvents(Request $request, EventRepository $repo): Response
+{
+    $type = $request->query->get('type');
+
+    $events = $type
+        ? $repo->findBy(['type' => $type])
+        : $repo->findAll();
+
+    return $this->render('admin/events/list.html.twig', [
+        'events' => $events,
+        'selectedType' => $type,
+    ]);
+}
 }

@@ -1,7 +1,5 @@
 <?php
 
-// src/Controller/ApiController.php
-
 namespace App\Controller;
 
 use App\Repository\UserRepository;
@@ -16,37 +14,46 @@ class ApiController extends AbstractController
     public function getMembers(Request $request, UserRepository $userRepository): JsonResponse
     {
         $filters = $request->query->all();
-        $users = $userRepository->findByFilters($filters);
+
+        // On utilise le champ unique 'fonction'
+        if (isset($filters['fonction'])) {
+            $filters = [
+                'metier' => $filters['metier'] ?? null,
+                'ville' => $filters['ville'] ?? null,
+                'fonction' => $filters['fonction'],
+            ];
+        }
+
+        $users = $userRepository->findByFilters(array_filter($filters));
 
         return new JsonResponse($users);
     }
-    // src/Controller/ApiController.php
 
-#[Route('/api/filters', name: 'api_filters')]
-public function getFilters(UserRepository $userRepository): JsonResponse
-{
-    $metiers = $userRepository->findDistinctMetiers();
-    $villes = $userRepository->findDistinctVilles();
-    $fonctions = $userRepository->findDistinctFonctions();
+    #[Route('/api/filters', name: 'api_filters')]
+    public function getFilters(UserRepository $userRepository): JsonResponse
+    {
+        $metiers = $userRepository->findDistinctMetiers();
+        $villes = $userRepository->findDistinctVilles();
+        $fonctions = $userRepository->findDistinctFonctions(); // fonction1 + fonction2 fusionnés
 
-    return new JsonResponse([
-        'metiers' => $metiers,
-        'villes' => $villes,
-        'fonctions' => $fonctions,
-    ]);
-}
-#[Route('/api/filter-users', name: 'api_filter_users')]
-public function filterUsers(Request $request, UserRepository $userRepository): JsonResponse
-{
-    $filters = [
-        'metier' => $request->query->get('metier'),
-        'ville' => $request->query->get('ville'),
-        'fonction1' => $request->query->get('fonction1'),
-    ];
+        return new JsonResponse([
+            'metiers' => $metiers,
+            'villes' => $villes,
+            'fonctions' => $fonctions,
+        ]);
+    }
 
-    // Appel du repo
-    $users = $userRepository->findByFilters(array_filter($filters));
+    #[Route('/api/filter-users', name: 'api_filter_users')]
+    public function filterUsers(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $filters = [
+            'metier' => $request->query->get('metier'),
+            'ville' => $request->query->get('ville'),
+            'fonction' => $request->query->get('fonction'), // ✅ un seul champ
+        ];
 
-    return new JsonResponse($users);
-}
+        $users = $userRepository->findByFilters(array_filter($filters));
+
+        return new JsonResponse($users);
+    }
 }

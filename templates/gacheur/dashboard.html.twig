@@ -38,6 +38,18 @@
   <h1 class="mb-4 text-center text-success">Tableau de bord Gâcheur</h1>
 
   <div class="row g-4">
+   <!-- 📋 Événements de mon métier -->
+    <div class="col-md-3">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body text-center d-flex flex-column h-100">
+          <div>
+            <h5 class="card-title">📋 Événements de mon métier</h5>
+            <p class="card-text">Voir les événements liés à votre métier et les inscrits pour chacun de ces évènements.</p>
+          </div>
+          <a href="{{ path('event_by_profession') }}" class="btn btn-secondary mt-auto">Consulter</a>
+        </div>
+      </div>
+    </div>
     <!-- 📅 Proposer un événement -->
     <div class="col-md-3">
       <div class="card shadow border-0 h-100">
@@ -45,8 +57,22 @@
           <div>
             <h5 class="card-title">📅 Proposer un événement</h5>
             <p class="card-text">Soumettez un événement au planning.</p>
+            <p class="card-text">Si c'est un évènement corporatif, il est automatiquement inscrit dans la catégorie de votre métier et apparaitra sur votre planning.</p>
+            <p class="card-text">Si c'est un évènement communautaire, il devra être validé par le provincial avant d'apparaitre sur le planning.</p>
           </div>
           <a href="{{ path('event_propose') }}" class="btn btn-success mt-auto">Proposer</a>
+        </div>
+      </div>
+    </div>
+     <!-- 📆 Voir le planning -->
+    <div class="col-md-3">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body text-center d-flex flex-column h-100">
+          <div>
+            <h5 class="card-title">📆 Voir le planning</h5>
+            <p class="card-text">Consultez les événements à venir.</p>
+          </div>
+          <a href="{{ path('app_planning') }}" class="btn btn-info mt-auto">Accéder</a>
         </div>
       </div>
     </div>
@@ -63,32 +89,21 @@
         </div>
       </div>
     </div>
-
-    <!-- 📆 Voir le planning -->
-    <div class="col-md-3">
-      <div class="card shadow border-0 h-100">
-        <div class="card-body text-center d-flex flex-column h-100">
-          <div>
-            <h5 class="card-title">📆 Voir le planning</h5>
-            <p class="card-text">Consultez les événements à venir.</p>
-          </div>
-          <a href="{{ path('app_planning') }}" class="btn btn-info mt-auto">Accéder</a>
-        </div>
+<!-- 🏢 Gestion des entreprises -->
+<div class="col-md-3">
+  <div class="card shadow border-0 h-100">
+    <div class="card-body text-center d-flex flex-column h-100">
+      <div>
+        <h5 class="card-title">🏢 Gestion des entreprises</h5>
+        <p class="card-text">Créez une entreprise, modifiez ou supprimez celles existantes.</p>
       </div>
+      <a href="{{ path('entreprise_index') }}" class="btn btn-warning mt-auto">Gérer</a>
     </div>
+  </div>
+</div>
+   
 
-    <!-- 📋 Événements de mon métier -->
-    <div class="col-md-3">
-      <div class="card shadow border-0 h-100">
-        <div class="card-body text-center d-flex flex-column h-100">
-          <div>
-            <h5 class="card-title">📋 Événements de mon métier</h5>
-            <p class="card-text">Voir les événements liés à votre métier et les inscrits.</p>
-          </div>
-          <a href="{{ path('event_by_profession') }}" class="btn btn-secondary mt-auto">Consulter</a>
-        </div>
-      </div>
-    </div>
+   
   </div>
 </div>
 {% endblock %}

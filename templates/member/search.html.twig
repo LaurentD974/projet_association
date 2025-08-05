@@ -9,17 +9,17 @@
     <a href="{{ path('app_planning') }}" class="btn btn-primary">Voir le planning</a>
     <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
     {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
-  <a 
-    href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
-    class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}"
-  >
-    {% if 'ROLE_ADMIN' in app.user.roles %}
-      🛠️ Dashboard Admin
-    {% else %}
-      🎯 Dashboard Gâcheur
+      <a 
+        href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
+        class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}"
+      >
+        {% if 'ROLE_ADMIN' in app.user.roles %}
+          🛠️ Dashboard Admin
+        {% else %}
+          🎯 Dashboard Gâcheur
+        {% endif %}
+      </a>
     {% endif %}
-  </a>
-{% endif %}
   </div>
 </header>
 
@@ -35,7 +35,7 @@
       <option value="">Toutes les villes</option>
     </select>
 
-    <select name="fonction1" id="fonction-select" class="form-select" style="width: 200px;">
+    <select name="fonction" id="fonction-select" class="form-select" style="width: 200px;">
       <option value="">Toutes les fonctions</option>
     </select>
 
@@ -88,12 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
           resultList.innerHTML = '<p>Aucun membre trouvé pour ces critères.</p>';
         } else {
           data.forEach(member => {
-            console.log(member);
             let photoUrl = member.photo && member.photo.trim() !== ''
               ? photoBaseUrl + member.photo
               : defaultAvatarUrl;
 
-      let cardHTML = `
+let cardHTML = `
   <div class="member-card">
     <div class="member-photo-container">
       <img src="${photoUrl}" alt="Photo de ${member.prenom}" class="member-photo">
@@ -103,7 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
       <p><strong>Métier :</strong> ${member.metier}</p>
       <p><strong>État :</strong> ${member.statut} ${member.position}</p>
       <p><strong>Ville :</strong> ${member.ville}</p>
-      <p><strong>Fonction :</strong> ${member.fonction1} <br> ${member.fonction2} </p>
+      ${member.fonction1 && member.fonction1.trim() !== '' ? `<p><strong>Gâche :</strong> ${member.fonction1}</p>` : ''}
+      ${member.fonction2 && member.fonction2.trim() !== '' ? `<p><strong>Gâche :</strong> ${member.fonction2}</p>` : ''}
       <div class="card-footer">
         <a href="/member/show/${member.id}" class="btn btn-primary">Voir le profil</a>
       </div>

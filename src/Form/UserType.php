@@ -9,10 +9,12 @@ use Symfony\Component\Form\Extension\Core\Type\{
     EmailType,
     TelType,
     PasswordType,
+    RepeatedType,
     ChoiceType,
     FileType
 };
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use App\Entity\User;
 
 class UserType extends AbstractType
@@ -26,7 +28,7 @@ class UserType extends AbstractType
         ->add('nom', TextType::class, ['label' => 'Nom'])
         ->add('email', EmailType::class)
         ->add('password', PasswordType::class, ['required' => false])
-        ->add('date_naissance', TextType::class, ['label' => 'Date de naissance']) // tu peux utiliser DateType si tu préfères
+        ->add('date_naissance', TextType::class, ['label' => 'Date de naissance']) // Tu peux utiliser DateType si tu préfères
 
         // 📱 Coordonnées
         ->add('telephone', TelType::class)
@@ -67,6 +69,24 @@ class UserType extends AbstractType
                 'Peut valider' => 'validate',
             ],
             'label' => 'Droit spécifique'
+        ])
+
+        // 🔐 Sécurité
+        ->add('currentPassword', PasswordType::class, [
+            'mapped' => false,
+            'label' => 'Mot de passe actuel',
+            'constraints' => [
+                new NotBlank([
+                    'message' => 'Veuillez saisir votre mot de passe actuel.',
+                ]),
+            ],
+        ])
+        ->add('plainPassword', RepeatedType::class, [
+            'type' => PasswordType::class,
+            'mapped' => false,
+            'required' => false,
+            'first_options'  => ['label' => 'Nouveau mot de passe'],
+            'second_options' => ['label' => 'Confirmation du mot de passe'],
         ]);
     }
 

@@ -19,9 +19,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         parent::__construct($registry, User::class);
     }
 
-    /**
-     * Mise à jour automatique du mot de passe haché
-     */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof User) {
@@ -33,9 +30,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    /**
-     * Retourne tous les utilisateurs ayant le rôle ROLE_USER
-     */
     public function findMembers(): array
     {
         return $this->createQueryBuilder('u')
@@ -45,9 +39,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
-    /**
-     * Métiers distincts
-     */
     public function findDistinctMetiers(): array
     {
         $result = $this->createQueryBuilder('u')
@@ -59,9 +50,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return array_map(fn($row) => $row['metier'], $result);
     }
 
-    /**
-     * Villes distinctes
-     */
     public function findDistinctVilles(): array
     {
         $result = $this->createQueryBuilder('u')
@@ -73,23 +61,30 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return array_map(fn($row) => $row['ville'], $result);
     }
 
-    /**
-     * Fonctions distinctes (fonction1)
-     */
     public function findDistinctFonctions(): array
     {
-        $result = $this->createQueryBuilder('u')
-            ->select('DISTINCT u.fonction1')
+        $qb = $this->createQueryBuilder('u');
+
+        $result1 = $qb
+            ->select('DISTINCT u.fonction1 AS fonction')
             ->where('u.fonction1 IS NOT NULL')
             ->getQuery()
             ->getArrayResult();
 
-        return array_map(fn($row) => $row['fonction1'], $result);
+        $result2 = $qb
+            ->select('DISTINCT u.fonction2 AS fonction')
+            ->where('u.fonction2 IS NOT NULL')
+            ->getQuery()
+            ->getArrayResult();
+
+        $fonctions = array_merge($result1, $result2);
+        $uniqueFonctions = array_unique(array_map(fn($row) => $row['fonction'], $fonctions));
+
+        sort($uniqueFonctions);
+
+        return $uniqueFonctions;
     }
 
-    /**
-     * Filtrage par métier, ville, fonction
-     */
     public function findByFilters(array $filters): array
     {
         $qb = $this->createQueryBuilder('u');
@@ -105,11 +100,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             $qb->andWhere('u.ville = :ville')->setParameter('ville', $filters['ville']);
         }
 
-        if (!empty($filters['fonction1'])) {
-            $qb->andWhere('u.fonction1 = :fonction1')->setParameter('fonction1', $filters['fonction1']);
+        if (!empty($filters['fonction'])) {
+            $qb->andWhere('u.fonction1 = :fonction OR u.fonction2 = :fonction')
+               ->setParameter('fonction', $filters['fonction']);
         }
 
-        $qb->select('u.id,u.email,u.nom,u.prenom,u.metier,u.statut,u.position,u.telephone,u.fonction1,u.ville,u.photo');
+        $qb->select('u.id, u.email, u.nom, u.prenom, u.metier, u.statut, u.position, u.telephone, u.fonction1, u.fonction2, u.ville, u.photo');
 
         return $qb->getQuery()->getArrayResult();
     }

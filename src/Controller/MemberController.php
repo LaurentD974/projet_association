@@ -65,7 +65,7 @@ public function show($id, UserRepository $userRepository): Response
     {
         $metier = $request->query->get('metier');
         $ville = $request->query->get('ville');
-        $fonction1 = $request->query->get('fonction1'); // Correction ici
+        $fonction = $request->query->get('fonction'); // Correction ici
 
         $qb = $repo->createQueryBuilder('u');
 
@@ -75,8 +75,8 @@ public function show($id, UserRepository $userRepository): Response
         if ($ville) {
             $qb->andWhere('u.ville = :ville')->setParameter('ville', $ville);
         }
-        if ($fonction1) {
-            $qb->andWhere('u.fonction1 LIKE :fonction1')->setParameter('fonction1', "%$fonction1%");
+        if ($fonction) {
+            $qb->andWhere('u.fonction LIKE :fonction1')->setParameter('fonction', "%$fonction%");
         }
 
         $results = $qb->getQuery()->getResult();

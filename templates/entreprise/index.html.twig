@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des entreprises{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-center text-primary">🏢 Liste des entreprises</h2>
+
+  {% for message in app.flashes('success') %}
+    <div class="alert alert-success">{{ message }}</div>
+  {% endfor %}
+
+  <table class="table table-bordered table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>Nom</th>
+        <th>Responsable</th>
+        <th>Ville</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entreprise in entreprises %}
+        <tr>
+          <td>{{ entreprise.nom }}</td>
+          <td>{{ entreprise.responsable }}</td>
+          <td>{{ entreprise.ville }}</td>
+          <td>
+            <a href="{{ path('entreprise_edit', {id: entreprise.id}) }}" class="btn btn-sm btn-warning">✏️ Modifier</a>
+
+            <form method="post" action="{{ path('entreprise_delete', {id: entreprise.id}) }}" style="display:inline-block;" onsubmit="return confirm('Confirmer la suppression ?');">
+              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entreprise.id) }}">
+              <button class="btn btn-sm btn-danger">🗑️ Supprimer</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="4" class="text-center">Aucune entreprise enregistrée.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="mt-4">
+    <a href="{{ path('gacheur_dashboard') }}" class="btn btn-outline-secondary">⬅️ Retour au tableau de bord</a>
+    <a href="{{ path('entreprise_new') }}" class="btn btn-success float-end">➕ Ajouter une entreprise</a>
+  </div>
+</div>
+{% endblock %}
