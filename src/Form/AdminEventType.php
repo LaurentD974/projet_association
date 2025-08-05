@@ -59,7 +59,7 @@ class AdminEventType extends AbstractType
                 'label' => 'Événement validé',
                 'required' => false,
             ]);
-        // On ne propose pas proposedBy ni participants ici, sauf si tu veux les gérer manuellement
+    
     }
 
     public function configureOptions(OptionsResolver $resolver): void

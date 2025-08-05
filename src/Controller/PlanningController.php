@@ -31,9 +31,9 @@ class PlanningController extends AbstractController
                 'start' => $e['startDate']->format('Y-m-d H:i:s'),
                 'url' => '/event/' . $e['id'],
                 'backgroundColor' => match ($e['type']) {
-                    'Réunion' => '#3498db',
-                    'Atelier' => '#2ecc71',
-                    'Sortie' => '#f39c12',
+                    'Charpentier' => '#3498db',
+                    'Menuisier' => '#2ecc71',
+                    'Couvreur' => '#f39c12',
                     'Communautaire' => '#e74c3c',
                     default => '#95a5a6',
                 },

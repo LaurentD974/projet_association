@@ -4,8 +4,8 @@
 
 {% block body %}
 
-<div class="member-header">
-  <h1 class="member-title">Profil détaillé de {{ member.nom }} {{ member.prenom }}</h1>
+<div class="member-header2">
+  <h1 class="member-title2">Profil détaillé de {{ member.nom }} {{ member.prenom }}</h1>
   <div class="member-actions">
     <a href="{{ path('user_search') }}" class="btn btn-outline-primary">🔙 Trombinoscope</a>
     <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
@@ -13,14 +13,14 @@
 </div>
 
 <div class="member-card2">
-  <div class="member-info">
+  <div class="member-info2">
     <h2>{{ member.nom }} {{ member.prenom }}</h2>
     <p><strong>Métier :</strong> {{ member.metier }}</p>
     <p><strong>Gâche(s) :</strong> {{ member.fonction1 }} {{ member.fonction2 }}</p>
     <p><strong>Etat :</strong> {{ member.statut }} {{ member.position }}</p>
     <p><strong>Nom de province :</strong> {{ member.nomprovince }} {{ member.nomcompagnon }}</p>
     <p><strong>Téléphone :</strong> {{ member.telephone }}</p>
-    <p><strong>Email :</strong> {{ member.email }}</p>
+<p><strong>Email :</strong> ✉️ <a href="mailto:{{ member.email }}">{{ member.email }}</a></p>
     <p><strong>Adresse :</strong> {{ member.adresse1 }}</p>
     <p><strong>Complément :</strong> {{ member.adresse2 }}</p>
     <p><strong>Code postal :</strong> {{ member.codepostale }}</p>

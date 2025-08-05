@@ -22,7 +22,7 @@
       </h1>
     </div>
     <div class="header-right">
-      <button class="btn">Contact</button>
+      <a href="{{ path('contact_form') }}" class="btn">Contact</a>
       {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
         <a href="{{ path('app_logout') }}" class="btn">Se déconnecter</a>
       {% else %}
@@ -64,19 +64,31 @@
   <footer class="footer">
     <div class="footer-content">
       <p>&copy; 2025 AOCDTF - Île de la Réunion 🌴 | Tous droits réservés</p>
-      <p>
-        <a href="mailto:provincial.la-reunion@compagnons-du-devoir.com">
-          provincial.la-reunion@compagnons-du-devoir.com
-        </a> |
+      <p>        |
         <a href="https://www.compagnons-du-devoir.com/" target="_blank" rel="noopener">
           Site officiel
-        </a>
+        </a> |
       </p>
+
       <div class="social-icons">
-        <a href="#"><img src="{{ asset('image/facebook-icon.png') }}" alt="Icône Facebook" /></a>
-        <a href="#"><img src="{{ asset('image/instagram-icon.png') }}" alt="Icône Instagram" /></a>
-        <a href="#"><img src="{{ asset('image/linkedin-icon.png') }}" alt="Icône LinkedIn" /></a>
-      </div>
+        <a href="https://www.facebook.com/compagnonsdudevoir"target="_blank" rel="noopener noreferrer">
+<img src="{{ asset('image/facebook_logo_icon_257007.webp') }}" alt="Icône Facebook" /></a>
+
+        <a href="https://www.instagram.com/les_compagnons/"target="_blank" rel="noopener noreferrer">
+        <img src="{{ asset('image/instagram_icon.png.webp') }}" alt="Icône Instagram" /></a>
+
+        <a href="https://www.linkedin.com/company/les-compagnons-du-devoir/?trk=biz-companies-cym"target="_blank" rel="noopener noreferrer">
+        <img src="{{ asset('image/linkedin-icon.png') }}" alt="Icône LinkedIn" /></a>
+
+        <a href="https://www.youtube.com/user/CompagnonsDevoir?sub_confirmation=1"target="_blank" rel="noopener noreferrer">
+        <img src="{{ asset('image/youtube_icon.png') }}" alt="Icône YouTube" /></a>   
+
+        <a href="https://www.tiktok.com/@lescompagnonsdudevoir"target="_blank" rel="noopener noreferrer">
+        <img src="{{ asset('image/tiktok-outline.svg') }}" alt="Icône TikTok" /></a>
+    
+        <a href="https://twitter.com/les_compagnons"target="_blank" rel="noopener noreferrer">
+        <img src="{{ asset('image/icon-twitter.png') }}" alt="Icône LinkedIn" /></a>
+    
     </div>
   </footer>
 {% endblock %}

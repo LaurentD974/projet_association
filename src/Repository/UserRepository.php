@@ -109,7 +109,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             $qb->andWhere('u.fonction1 = :fonction1')->setParameter('fonction1', $filters['fonction1']);
         }
 
-        $qb->select('u.id,u.email,u.nom,u.prenom,u.metier,u.statut,u.position,u.telephone,u.fonction1,u.ville');
+        $qb->select('u.id,u.email,u.nom,u.prenom,u.metier,u.statut,u.position,u.telephone,u.fonction1,u.ville,u.photo');
 
         return $qb->getQuery()->getArrayResult();
     }

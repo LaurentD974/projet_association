@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contactez le Provincial{% endblock %}
+
+{% block body %}
+<section class="contact-section">
+  <div class="container">
+    <h2>Contactez le Provincial</h2>
+    <p>Pour toute demande officielle, vous pouvez utiliser ce formulaire ou appeler directement :</p>
+    <p class="contact-phone"><strong>📞 Téléphone :</strong> +262 693 62 62 82</p>
+
+    <form method="POST" action="{{ path('contact_send') }}" class="contact-form">
+      <div class="mb-3">
+        <label for="nom" class="form-label">Votre nom</label>
+        <input type="text" class="form-control" id="nom" name="nom" required>
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Votre adresse email</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+      </div>
+      <div class="mb-3">
+        <label for="message" class="form-label">Votre message</label>
+        <textarea class="form-control" id="message" name="message" rows="6" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
