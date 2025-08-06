@@ -23,8 +23,8 @@ class News
     #[ORM\Column(type: 'text')]
     private ?string $content = null;
 
-    #[ORM\Column]
-    private ?\DateTimeInterface $createdAt = null;
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $createdAt;
 
     #[ORM\Column]
     private ?bool $isPublished = false;

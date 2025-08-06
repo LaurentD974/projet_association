@@ -50,6 +50,18 @@
   <div class="planning-actions">
     <a href="{{ path('user_search') }}" class="btn btn-outline-primary">🔙 Trombinoscope</a>
     <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
+    {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
+      <a 
+        href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
+        class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}"
+      >
+        {% if 'ROLE_ADMIN' in app.user.roles %}
+          🛠️ Dashboard Admin
+        {% else %}
+          🎯 Dashboard Gâcheur
+        {% endif %}
+      </a>
+    {% endif %}
     </div>
 
   <h2 class="titre-planning">Planning de l'association</h2>

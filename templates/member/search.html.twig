@@ -5,9 +5,9 @@
   <h1 class="search-title">Trombinoscope</h1>
   <div class="search-actions">
     <a href="{{ path('app_profile') }}" class="btn btn-warning">Modifier mon profil</a>
-    <a href="{{ path('app_logout') }}" class="btn btn-danger">Se déconnecter</a>
     <a href="{{ path('app_planning') }}" class="btn btn-primary">Voir le planning</a>
     <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
+    <a href="{{ path('app_logout') }}" class="btn btn-danger">Se déconnecter</a>
     {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
       <a 
         href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 

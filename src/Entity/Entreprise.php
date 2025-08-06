@@ -24,7 +24,7 @@ class Entreprise
     private ?string $adresse = null;
 
     #[ORM\Column(length: 20)]
-    private ?string $code_postale = null;
+    private ?string $codePostale = null;
 
     #[ORM\Column(length: 255)]
     private ?string $ville = null;
@@ -86,12 +86,12 @@ public function setAdresse(string $adresse): self
 
 public function getCodePostale(): ?string
 {
-    return $this->code_postale;
+    return $this->codePostale;
 }
 
 public function setCodePostale(string $code_postale): self
 {
-    $this->code_postale = $code_postale;
+    $this->codePostale = $code_postale;
     return $this;
 }
 

@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\{
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use App\Entity\User;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class UserType extends AbstractType
 {
@@ -87,7 +88,18 @@ class UserType extends AbstractType
             'required' => false,
             'first_options'  => ['label' => 'Nouveau mot de passe'],
             'second_options' => ['label' => 'Confirmation du mot de passe'],
-        ]);
+        ])
+        ->add('dateArrivee', DateType::class, [
+        'required' => false,
+        'widget' => 'single_text',
+        'label' => 'Date d\'arrivée'
+        ])
+        ->add('dateDepart', DateType::class, [
+        'required' => false,
+        'widget' => 'single_text',
+        'label' => 'Date de départ'
+    ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

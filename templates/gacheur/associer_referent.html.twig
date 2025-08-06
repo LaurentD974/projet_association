@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Associer un référent{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-success">🧭 Associer un référent à un utilisateur</h2>
+        <a href="{{ path('gacheur_dashboard') }}" class="btn btn-outline-secondary">
+            ⬅️ Retour au Tableau de bord
+        </a>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+            {{ form_start(form) }}
+            <div class="row g-4">
+                <div class="col-md-6">
+                    {{ form_row(form.referent) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.responsableDe) }}
+                </div>
+            </div>
+            <div class="text-end mt-4">
+                <button class="btn btn-success">💾 Enregistrer</button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

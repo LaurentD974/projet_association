@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use App\Entity\User;
 
 class UserProfileType extends AbstractType
@@ -57,6 +58,19 @@ class UserProfileType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
             ])
+                ->add('dateArrivee', DateType::class, [
+        'label' => '📅 Date d\'arrivée',
+        'required' => false,
+        'widget' => 'single_text',
+        'attr' => ['class' => 'form-control'],
+    ])
+    ->add('dateDepart', DateType::class, [
+        'label' => '📅 Date de départ',
+        'required' => false,
+        'widget' => 'single_text',
+        'attr' => ['class' => 'form-control'],
+    ])
+
             ->add('telephone', TextType::class, [
                 'label' => '📞 Téléphone',
                 'required' => false,

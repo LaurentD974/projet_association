@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs {{ position }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+  <h2 class="mb-4">Utilisateurs {{ position }} du métier : {{ app.user.metier }}</h2>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <a href="{{ path('gacheur_utilisateurs', { position: 'Itinérant' }) }}" class="btn btn-outline-dark me-2">Itinérants</a>
+      <a href="{{ path('gacheur_utilisateurs', { position: 'Sédentaire' }) }}" class="btn btn-outline-dark">Sédentaires</a>
+    </div>
+    <div>
+      <a href="{{ path('gacheur_dashboard') }}" class="btn btn-outline-secondary">⬅️ Retour au Tableau de bord</a>
+    </div>
+  </div>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Entreprise</th>
+        <th>Attribuer</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in utilisateurs %}
+        <tr>
+          <td>{{ user.nom }}</td>
+          <td>{{ user.prenom }}</td>
+          <td>{{ user.entreprise ? user.entreprise.nom : 'Non attribuée' }}</td>
+          <td>
+            <a href="{{ path('attribuer_entreprise', { id: user.id }) }}" class="btn btn-sm btn-success">Attribuer</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

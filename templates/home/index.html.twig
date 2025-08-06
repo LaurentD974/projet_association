@@ -31,6 +31,16 @@
     </div>
   </header>
 
+  {# 🔔 Bloc d'affichage des messages flash #}
+  {% for label, messages in app.flashes %}
+    {% for message in messages %}
+      <div class="alert alert-{{ label }} alert-dismissible fade show mt-3 mx-3" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+      </div>
+    {% endfor %}
+  {% endfor %}
+
   <main>
     <section class="content-section">
       <div class="text-block">
@@ -72,23 +82,29 @@
 
       <div class="social-icons">
         <a href="https://www.facebook.com/compagnonsdudevoir"target="_blank" rel="noopener noreferrer">
-<img src="{{ asset('image/facebook_logo_icon_257007.webp') }}" alt="Icône Facebook" /></a>
+          <img src="{{ asset('image/facebook_logo_icon_257007.webp') }}" alt="Icône Facebook" />
+        </a>
 
         <a href="https://www.instagram.com/les_compagnons/"target="_blank" rel="noopener noreferrer">
-        <img src="{{ asset('image/instagram_icon.png.webp') }}" alt="Icône Instagram" /></a>
+          <img src="{{ asset('image/instagram_icon.png.webp') }}" alt="Icône Instagram" />
+        </a>
 
         <a href="https://www.linkedin.com/company/les-compagnons-du-devoir/?trk=biz-companies-cym"target="_blank" rel="noopener noreferrer">
-        <img src="{{ asset('image/linkedin-icon.png') }}" alt="Icône LinkedIn" /></a>
+          <img src="{{ asset('image/linkedin-icon.png') }}" alt="Icône LinkedIn" />
+        </a>
 
         <a href="https://www.youtube.com/user/CompagnonsDevoir?sub_confirmation=1"target="_blank" rel="noopener noreferrer">
-        <img src="{{ asset('image/youtube_icon.png') }}" alt="Icône YouTube" /></a>   
+          <img src="{{ asset('image/youtube_icon.png') }}" alt="Icône YouTube" />
+        </a>   
 
         <a href="https://www.tiktok.com/@lescompagnonsdudevoir"target="_blank" rel="noopener noreferrer">
-        <img src="{{ asset('image/tiktok-outline.svg') }}" alt="Icône TikTok" /></a>
-    
+          <img src="{{ asset('image/tiktok-outline.svg') }}" alt="Icône TikTok" />
+        </a>
+
         <a href="https://twitter.com/les_compagnons"target="_blank" rel="noopener noreferrer">
-        <img src="{{ asset('image/icon-twitter.png') }}" alt="Icône LinkedIn" /></a>
-    
+          <img src="{{ asset('image/icon-twitter.png') }}" alt="Icône Twitter" />
+        </a>
+      </div>
     </div>
   </footer>
 {% endblock %}

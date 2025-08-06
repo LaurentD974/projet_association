@@ -6,42 +6,71 @@
 <div class="container mt-4">
   <h2 class="mb-4 text-center text-primary">🏢 Nouvelle entreprise</h2>
 
-  <form method="post">
-    <div class="row g-3">
-      <div class="col-md-6">
-        <label for="nom" class="form-label">Nom</label>
-        <input type="text" id="nom" name="nom" class="form-control">
-      </div>
-      <div class="col-md-6">
-        <label for="responsable" class="form-label">Responsable</label>
-        <input type="text" id="responsable" name="responsable" class="form-control">
-      </div>
-      <div class="col-md-6">
-        <label for="adresse" class="form-label">Adresse</label>
-        <input type="text" id="adresse" name="adresse" class="form-control">
-      </div>
-      <div class="col-md-3">
-        <label for="code_postal" class="form-label">Code postal</label>
-        <input type="text" id="code_postal" name="code_postal" class="form-control">
-      </div>
-      <div class="col-md-3">
-        <label for="ville" class="form-label">Ville</label>
-        <input type="text" id="ville" name="ville" class="form-control">
-      </div>
-      <div class="col-md-6">
-        <label for="telephone" class="form-label">Téléphone</label>
-        <input type="text" id="telephone" name="telephone" class="form-control">
-      </div>
-      <div class="col-md-6">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" id="email" name="email" class="form-control">
-      </div>
+  {{ form_start(form) }}
+
+  {# ✅ Flash de succès #}
+  {% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+
+  {# ❌ Erreurs globales du formulaire #}
+  {% for error in form_errors(form) %}
+    <div class="alert alert-danger">{{ error.message }}</div>
+  {% endfor %}
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label">Nom</label>
+      {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+      {{ form_errors(form.nom) }}
     </div>
 
-    <div class="d-flex justify-content-between mt-4">
-      <a href="{{ path('gacheur_dashboard') }}" class="btn btn-outline-secondary">⬅️ Retour au tableau de bord</a>
-      <button type="submit" class="btn btn-success">✅ Enregistrer</button>
+    <div class="col-md-6">
+      <label class="form-label">Responsable</label>
+      {{ form_widget(form.responsable, {'attr': {'class': 'form-control'}}) }}
+      {{ form_errors(form.responsable) }}
     </div>
-  </form>
+
+    <div class="col-md-6">
+      <label class="form-label">Adresse</label>
+      {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+      {{ form_errors(form.adresse) }}
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Code postal</label>
+      {{ form_widget(form.code_postale, {'attr': {'class': 'form-control'}}) }}
+      {{ form_errors(form.code_postale) }}
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Ville</label>
+      {{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
+      {{ form_errors(form.ville) }}
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Téléphone</label>
+      {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
+      {{ form_errors(form.telephone) }}
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Email</label>
+      {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+      {{ form_errors(form.email) }}
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between mt-4">
+    <a href="{{ path('gacheur_dashboard') }}" class="btn btn-outline-secondary">⬅️ Retour au tableau de bord</a>
+    <button type="submit" class="btn btn-success">✅ Enregistrer</button>
+  </div>
+
+  {{ form_rest(form) }}
+  {{ form_end(form) }}
 </div>
 {% endblock %}

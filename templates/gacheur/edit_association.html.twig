@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'association{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">
+            🖊️ Modifier l'association entre 
+            {{ referent.referent.prenom }} {{ referent.referent.nom }} 
+            et 
+            {{ referent.responsableDe.prenom }} {{ referent.responsableDe.nom }}
+        </h2>
+        <a href="{{ path('gacheur_referents_utilisateurs') }}" class="btn btn-outline-secondary">
+            ⬅️ Retour à la liste
+        </a>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+            {{ form_start(form) }}
+            {{ form_row(form.referent) }}
+            {{ form_row(form.responsableDe) }}
+            <div class="text-end mt-4">
+                <button class="btn btn-primary">💾 Mettre à jour</button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

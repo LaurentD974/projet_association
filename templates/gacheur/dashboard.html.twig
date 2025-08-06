@@ -35,7 +35,7 @@
     </div>
   {% endfor %}
 
-  <h1 class="mb-4 text-center text-success">Tableau de bord Gâcheur</h1>
+  <h1 class="mb-4 text-center text-success">Tableau de bord Maitre de métier</h1>
 
   <div class="row g-4">
    <!-- 📋 Événements de mon métier -->
@@ -84,6 +84,8 @@
           <div>
             <h5 class="card-title">🔍 Voir le trombinoscope</h5>
             <p class="card-text">Consultez les membres de l'association.</p>
+            <p class="card-text">Compagnons, aspirants, apprentis.</p>
+            <p class="card-text">Itinérants et sédentaires.</p>
           </div>
           <a href="{{ path('user_search') }}" class="btn btn-primary mt-auto">Accéder</a>
         </div>
@@ -101,8 +103,43 @@
     </div>
   </div>
 </div>
-   
-
+   <!-- 🧑‍🔧 Utilisateurs de mon métier -->
+<div class="col-md-3">
+  <div class="card shadow border-0 h-100">
+    <div class="card-body text-center d-flex flex-column h-100">
+      <div>
+        <h5 class="card-title">🧑‍🔧 Itinérants de ma corporation</h5>
+        <p class="card-text">Attribuer une entreprise aux itinérants et aux sédentaires.</p>
+      </div>
+      <a href="{{ path('gacheur_utilisateurs', { position: 'Itinérant' }) }}" class="btn btn-dark mt-auto">Accéder</a>
+    </div>
+  </div>
+</div>
+<!-- 🧭 Associer un référent -->
+<div class="col-md-3">
+  <div class="card shadow border-0 h-100">
+    <div class="card-body text-center d-flex flex-column h-100">
+      <div>
+        <h5 class="card-title">🧭 Associer un référent</h5>
+        <p class="card-text">Définissez les liens de responsabilité entre les membres.</p>
+        <p class="card-text">Choisissez une personne référente et associez-la à un utilisateur sous sa responsabilité.</p>
+      </div>
+      <a href="{{ path('associer_referent') }}" class="btn btn-outline-success mt-auto">Associer</a>
+    </div>
+  </div>
+</div>
+<!-- 🔗 Voir les associations référent ↔ utilisateur -->
+<div class="col-md-3">
+  <div class="card shadow border-0 h-100">
+    <div class="card-body text-center d-flex flex-column h-100">
+      <div>
+        <h5 class="card-title">🔗 Associations référent ↔ utilisateur</h5>
+        <p class="card-text">Consultez toutes les associations entre les membres et leurs référents.</p>
+      </div>
+      <a href="{{ path('gacheur_referents_utilisateurs') }}" class="btn btn-outline-primary mt-auto">Voir la liste</a>
+    </div>
+  </div>
+</div>
    
   </div>
 </div>

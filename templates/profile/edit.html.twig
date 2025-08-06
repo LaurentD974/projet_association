@@ -7,8 +7,19 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>👤 Modifier mon profil</h2>
         <a href="{{ path('user_search') }}" class="btn btn-outline-primary">
-            <i class="fas fa-arrow-left"></i> Retour
-        </a>
+            <i class="fas fa-arrow-left"></i> Retour </a>
+        {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
+      <a 
+        href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
+        class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}"
+      >
+        {% if 'ROLE_ADMIN' in app.user.roles %}
+          🛠️ Dashboard Admin
+        {% else %}
+          🎯 Dashboard Gâcheur
+        {% endif %}
+      </a>
+    {% endif %}
     </div>
 
     {# Messages flash #}
@@ -45,7 +56,19 @@
                     <div class="row gy-3">
                         <div class="col-12">
                             <label class="form-label">👤 Nom complet</label>
-                            <input type="text" class="form-control" value="{{ user.prenom }} {{ user.nom }}" disabled>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <input type="text" class="form-control me-3" value="{{ user.prenom }} {{ user.nom }}" disabled>
+                                {% if referent %}
+                                    <div class="text-end">
+                                        <strong class="text-primary">
+                                            Ton référent est 
+                                            <a href="{{ path('referent_show', { id: referent.id }) }}" class="text-decoration-none text-primary fw-bold">
+                                                {{ referent.prenom }} {{ referent.nom }}
+                                            </a>
+                                        </strong>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
 
                         <div class="col-12 col-md-6">
@@ -71,6 +94,14 @@
                                     'title': 'Veuillez entrer un numéro de téléphone valide.'
                                 }
                             }) }}
+                        </div>
+                    </div>
+                    <div class="row gy-3">
+                        <div class="col-12 col-md-6">
+                            {{ form_row(form.dateArrivee) }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            {{ form_row(form.dateDepart) }}
                         </div>
                     </div>
 

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Referent;
 use App\Form\UserProfileType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Repository\ReferentRepository;
 
 class ProfileController extends AbstractController
 {
@@ -20,27 +22,28 @@ class ProfileController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         SluggerInterface $slugger,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        ReferentRepository $referentRepo
     ): Response {
-        /** @var User|null $user */
         $user = $this->getUser();
 
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour modifier votre profil.');
         }
 
+        $association = $referentRepo->findOneBy(['responsableDe' => $user]);
+        $referent = $association ? $association->getReferent() : null;
+
         $form = $this->createForm(UserProfileType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // 🔐 Vérification du mot de passe actuel
             $currentPassword = $form->get('currentPassword')->getData();
             if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
                 $this->addFlash('danger', '❌ Mot de passe actuel incorrect.');
                 return $this->redirectToRoute('app_profile');
             }
 
-            // 📸 Gestion de la photo
             $photoFile = $form->get('photo')->getData();
             if ($photoFile) {
                 $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -59,7 +62,6 @@ class ProfileController extends AbstractController
                 }
             }
 
-            // 🔄 Mise à jour du mot de passe si nécessaire
             $plainPassword = $form->get('plainPassword')->getData();
             if ($plainPassword) {
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
@@ -67,7 +69,6 @@ class ProfileController extends AbstractController
                 $this->addFlash('info', '🔐 Mot de passe mis à jour avec succès.');
             }
 
-            // 💾 Enregistrement
             $em->flush();
             $this->addFlash('success', '✅ Profil mis à jour avec succès.');
             return $this->redirectToRoute('app_profile');
@@ -76,11 +77,13 @@ class ProfileController extends AbstractController
         return $this->render('profile/edit.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
+            'referent' => $referent,
+            'association' => $association,
         ]);
     }
 
     #[Route('/mon-profil/succes', name: 'app_profile_success')]
-    public function success(): Response
+    public function success(ReferentRepository $referentRepo): Response
     {
         $user = $this->getUser();
 
@@ -88,11 +91,33 @@ class ProfileController extends AbstractController
             throw $this->createAccessDeniedException('Accès refusé.');
         }
 
+        $association = $referentRepo->findOneBy(['responsableDe' => $user]);
+        $referent = $association ? $association->getReferent() : null;
+
         $form = $this->createForm(UserProfileType::class, $user);
 
         return $this->render('profile/edit.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
+            'referent' => $referent,
+            'association' => $association,
         ]);
     }
+
+  #[Route('/referent/{id}', name: 'referent_show')]
+public function show(int $id, EntityManagerInterface $em, ReferentRepository $referentRepo): Response
+{
+    $referentUser = $em->getRepository(User::class)->find($id);
+
+    if (!$referentUser) {
+        throw $this->createNotFoundException('Référent introuvable.');
+    }
+
+    $encadres = $referentRepo->findEncadresByReferent($referentUser);
+
+    return $this->render('referent/show.html.twig', [
+        'referent' => $referentUser, // ← C’est un User
+        'encadres' => array_map(fn($r) => $r->getResponsableDe(), $encadres),
+    ]);
+}
 }

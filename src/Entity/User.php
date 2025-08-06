@@ -9,8 +9,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Event;
+use App\Entity\Entreprise;
 use DateTimeInterface;
-
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -29,8 +29,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?string $password = null;
-
-    // === Champs métiers ajoutés ===
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $prenom = null;
@@ -80,45 +78,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
-    #[ORM\Column(type: 'date', nullable: true)]
-    private ?DateTimeInterface $date_arrivee = null;
+    #[ORM\Column(name: 'date_arrivee', type: 'date', nullable: true)]
+    private ?DateTimeInterface $dateArrivee = null;
 
-    #[ORM\Column(type: 'date', nullable: true)]
-    private ?DateTimeInterface $date_depart = null;
-
+    #[ORM\Column(name: 'date_depart', type: 'date', nullable: true)]
+    private ?DateTimeInterface $dateDepart = null;
 
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
     private Collection $eventsParticipated;
 
     #[ORM\ManyToOne(targetEntity: Entreprise::class, inversedBy: 'users')]
-private ?Entreprise $entreprise = null;
+    private ?Entreprise $entreprise = null;
 
     public function __construct()
     {
         $this->eventsParticipated = new ArrayCollection();
     }
 
-    // === Méthodes standards ===
+    public function getId(): ?int { return $this->id; }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getEmail(): ?string { return $this->email; }
+    public function setEmail(string $email): static { $this->email = $email; return $this; }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-        return $this;
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
+    public function getUserIdentifier(): string { return (string) $this->email; }
 
     public function getRoles(): array
     {
@@ -127,21 +109,10 @@ private ?Entreprise $entreprise = null;
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-        return $this;
-    }
+    public function setRoles(array $roles): static { $this->roles = $roles; return $this; }
 
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-        return $this;
-    }
+    public function getPassword(): ?string { return $this->password; }
+    public function setPassword(string $password): static { $this->password = $password; return $this; }
 
     public function __serialize(): array
     {
@@ -151,181 +122,66 @@ private ?Entreprise $entreprise = null;
     }
 
     #[\Deprecated]
-    public function eraseCredentials(): void
-    {
-    }
+    public function eraseCredentials(): void {}
 
-    // === Getters/Setters des champs personnalisés ===
+    public function getPrenom(): ?string { return $this->prenom; }
+    public function setPrenom(?string $prenom): static { $this->prenom = $prenom; return $this; }
 
-    public function getPrenom(): ?string
-    {
-        return $this->prenom;
-    }
-    public function setPrenom(?string $prenom): static
-    {
-        $this->prenom = $prenom;
-        return $this;
-    }
+    public function getNom(): ?string { return $this->nom; }
+    public function setNom(?string $nom): static { $this->nom = $nom; return $this; }
 
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
-    public function setNom(?string $nom): static
-    {
-        $this->nom = $nom;
-        return $this;
-    }
+    public function getMetier(): ?string { return $this->metier; }
+    public function setMetier(?string $metier): static { $this->metier = $metier; return $this; }
 
-    public function getMetier(): ?string
-    {
-        return $this->metier;
-    }
-    public function setMetier(?string $metier): static
-    {
-        $this->metier = $metier;
-        return $this;
-    }
+    public function getStatut(): ?string { return $this->statut; }
+    public function setStatut(?string $statut): static { $this->statut = $statut; return $this; }
 
-    public function getStatut(): ?string
-    {
-        return $this->statut;
-    }
-    public function setStatut(?string $statut): static
-    {
-        $this->statut = $statut;
-        return $this;
-    }
+    public function getPosition(): ?string { return $this->position; }
+    public function setPosition(?string $position): static { $this->position = $position; return $this; }
 
-    public function getPosition(): ?string
-    {
-        return $this->position;
-    }
-    public function setPosition(?string $position): static
-    {
-        $this->position = $position;
-        return $this;
-    }
+    public function getNomProvince(): ?string { return $this->nomProvince; }
+    public function setNomProvince(?string $nomProvince): static { $this->nomProvince = $nomProvince; return $this; }
 
-    public function getNomProvince(): ?string
-    {
-        return $this->nomProvince;
-    }
-    public function setNomProvince(?string $nomProvince): static
-    {
-        $this->nomProvince = $nomProvince;
-        return $this;
-    }
+    public function getNomCompagnon(): ?string { return $this->nomCompagnon; }
+    public function setNomCompagnon(?string $nomCompagnon): static { $this->nomCompagnon = $nomCompagnon; return $this; }
 
-    public function getNomCompagnon(): ?string
-    {
-        return $this->nomCompagnon;
-    }
-    public function setNomCompagnon(?string $nomCompagnon): static
-    {
-        $this->nomCompagnon = $nomCompagnon;
-        return $this;
-    }
+    public function getTelephone(): ?string { return $this->telephone; }
+    public function setTelephone(?string $telephone): static { $this->telephone = $telephone; return $this; }
 
-    public function getTelephone(): ?string
-    {
-        return $this->telephone;
-    }
-    public function setTelephone(?string $telephone): static
-    {
-        $this->telephone = $telephone;
-        return $this;
-    }
+    public function getFonction1(): ?string { return $this->fonction1; }
+    public function setFonction1(?string $fonction1): static { $this->fonction1 = $fonction1; return $this; }
 
-    public function getFonction1(): ?string
-    {
-        return $this->fonction1;
-    }
-    public function setFonction1(?string $fonction1): static
-    {
-        $this->fonction1 = $fonction1;
-        return $this;
-    }
+    public function getFonction2(): ?string { return $this->fonction2; }
+    public function setFonction2(?string $fonction2): static { $this->fonction2 = $fonction2; return $this; }
 
-    public function getFonction2(): ?string
-    {
-        return $this->fonction2;
-    }
-    public function setFonction2(?string $fonction2): static
-    {
-        $this->fonction2 = $fonction2;
-        return $this;
-    }
+    public function getAdresse1(): ?string { return $this->adresse1; }
+    public function setAdresse1(?string $adresse1): static { $this->adresse1 = $adresse1; return $this; }
 
-    public function getAdresse1(): ?string
-    {
-        return $this->adresse1;
-    }
-    public function setAdresse1(?string $adresse1): static
-    {
-        $this->adresse1 = $adresse1;
-        return $this;
-    }
+    public function getAdresse2(): ?string { return $this->adresse2; }
+    public function setAdresse2(?string $adresse2): static { $this->adresse2 = $adresse2; return $this; }
 
-    public function getAdresse2(): ?string
-    {
-        return $this->adresse2;
-    }
-    public function setAdresse2(?string $adresse2): static
-    {
-        $this->adresse2 = $adresse2;
-        return $this;
-    }
+    public function getCodePostale(): ?string { return $this->codePostale; }
+    public function setCodePostale(?string $codePostale): static { $this->codePostale = $codePostale; return $this; }
 
-    public function getCodePostale(): ?string
-    {
-        return $this->codePostale;
-    }
-    public function setCodePostale(?string $codePostale): static
-    {
-        $this->codePostale = $codePostale;
-        return $this;
-    }
+    public function getVille(): ?string { return $this->ville; }
+    public function setVille(?string $ville): static { $this->ville = $ville; return $this; }
 
-    public function getVille(): ?string
-    {
-        return $this->ville;
-    }
-    public function setVille(?string $ville): static
-    {
-        $this->ville = $ville;
-        return $this;
-    }
+    public function getDroit(): ?string { return $this->droit; }
+    public function setDroit(?string $droit): static { $this->droit = $droit; return $this; }
 
-    public function getDroit(): ?string
-    {
-        return $this->droit;
-    }
-    public function setDroit(?string $droit): static
-    {
-        $this->droit = $droit;
-        return $this;
-    }
+    public function getPhoto(): ?string { return $this->photo; }
+    public function setPhoto(?string $photo): static { $this->photo = $photo; return $this; }
 
-    public function getPhoto(): ?string
-    {
-        return $this->photo;
-    }
-    public function setPhoto(?string $photo): static
-    {
-        $this->photo = $photo;
-        return $this;
-    }
+    public function getDateArrivee(): ?DateTimeInterface { return $this->dateArrivee; }
+    public function setDateArrivee(?DateTimeInterface $date_arrivee): static { $this->dateArrivee = $date_arrivee; return $this; }
 
-    // === Relation avec Event ===
+    public function getDateDepart(): ?DateTimeInterface { return $this->dateDepart; }
+    public function setDateDepart(?DateTimeInterface $date_depart): static { $this->dateDepart = $date_depart; return $this; }
 
-    /**
-     * @return Collection<int, Event>
-     */
-    public function getEventsParticipated(): Collection
-    {
-        return $this->eventsParticipated;
-    }
+    public function getEntreprise(): ?Entreprise { return $this->entreprise; }
+    public function setEntreprise(?Entreprise $entreprise): self { $this->entreprise = $entreprise; return $this; }
+
+    public function getEventsParticipated(): Collection { return $this->eventsParticipated; }
 
     public function addEventParticipated(Event $event): self
     {
@@ -345,26 +201,4 @@ private ?Entreprise $entreprise = null;
 
         return $this;
     }
-    public function getDateArrivee(): ?DateTimeInterface
-{
-    return $this->date_arrivee;
-}
-
-public function setDateArrivee(?DateTimeInterface $date_arrivee): static
-{
-    $this->date_arrivee = $date_arrivee;
-    return $this;
-}
-
-public function getDateDepart(): ?DateTimeInterface
-{
-    return $this->date_depart;
-}
-
-public function setDateDepart(?DateTimeInterface $date_depart): static
-{
-    $this->date_depart = $date_depart;
-    return $this;
-}
-
 }

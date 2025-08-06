@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil du Référent{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-3">👤 Profil du Référent</h1>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h4 class="card-title">{{ referent.nom }} {{ referent.prenom }}</h4>
+                <p class="card-text">
+                    <strong>Email :</strong> <a href="mailto:{{ referent.email }}">{{ referent.email }}</a><br>
+                    <strong>Téléphone :</strong> <a href="tel:{{ referent.telephone }}">{{ referent.telephone }}</a>
+                </p>
+            </div>
+        </div>
+
+        <h3>👥 Utilisateurs encadrés</h3>
+        <ul class="list-group">
+            {% for encadre in encadres %}
+                <li class="list-group-item">
+                    {{ encadre.nom }} {{ encadre.prenom }}
+                    {% if encadre.email %}
+                        — <a href="mailto:{{ encadre.email }}">{{ encadre.email }}</a>
+                    {% endif %}
+                </li>
+            {% else %}
+                <li class="list-group-item">Aucun utilisateur encadré.</li>
+            {% endfor %}
+        </ul>
+
+        <a href="{{ path('app_profile') }}" class="btn btn-secondary mt-4">← Retour à mon profil</a>
+    </div>
+{% endblock %}

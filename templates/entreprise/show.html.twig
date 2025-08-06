@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fiche entreprise{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🏢 Fiche de l'entreprise : {{ entreprise.nom }}</h2>
+    {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
+      <a 
+        href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
+        class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}"
+      >
+        {% if 'ROLE_ADMIN' in app.user.roles %}
+          🛠️ Dashboard Admin
+        {% else %}
+          🎯 Dashboard Gâcheur
+        {% endif %}
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">{{ entreprise.nom }}</h5>
+
+      <p><strong>Responsable :</strong> {{ entreprise.responsable }}</p>
+      <p><strong>Adresse :</strong> {{ entreprise.adresse }}</p>
+      <p><strong>Code postal :</strong> {{ entreprise.codePostale }}</p>
+      <p><strong>Ville :</strong> {{ entreprise.ville }}</p>
+      <p><strong>Téléphone :</strong> 📞 {{ entreprise.telephone }}</p>
+      <p><strong>Email :</strong> ✉️ <a href="mailto:{{ entreprise.email }}">{{ entreprise.email }}</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -73,4 +73,11 @@ public function delete(Request $request, Entreprise $entreprise, EntityManagerIn
 
     return $this->redirectToRoute('entreprise_index');
 }
+#[Route('/entreprise/{id}', name: 'entreprise_show')]
+public function show(Entreprise $entreprise): Response
+{
+    return $this->render('entreprise/show.html.twig', [
+        'entreprise' => $entreprise,
+    ]);
+}
 }

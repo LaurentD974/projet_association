@@ -1,61 +1,76 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier l'entreprise{% endblock %}
+{% block title %}Modifier une entreprise{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-  <h2 class="text-center text-warning mb-4">✏️ Modifier l'entreprise</h2>
+  <div class="container mt-5">
+    <h1 class="mb-4">✏️ Modifier une entreprise</h1>
 
-  <div class="card shadow-lg border-0 rounded-4">
-    <div class="card-body p-4">
-      {{ form_start(form) }}
-        <div class="row g-4">
-          <!-- 🏢 Informations générales -->
-          <div class="col-md-6">
-            <label class="form-label">🏢 Nom</label>
-            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">👤 Responsable</label>
-            {{ form_widget(form.responsable, {'attr': {'class': 'form-control'}}) }}
-          </div>
+    {{ form_start(form) }}
 
-          <!-- 🏠 Adresse -->
-          <div class="col-md-12">
-            <label class="form-label">🏠 Adresse</label>
-            {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">📮 Code postal</label>
-            {{ form_widget(form.code_postale, {'attr': {'class': 'form-control'}}) }}
-          </div>
-          <div class="col-md-8">
-            <label class="form-label">🌍 Ville</label>
-            {{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
-          </div>
+    {# ✅ Flash de succès #}
+    {% for message in app.flashes('success') %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
 
-          <!-- 📞 Contact -->
-          <div class="col-md-6">
-            <label class="form-label">📞 Téléphone</label>
-            {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">✉️ Email</label>
-            {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
-          </div>
-        </div>
+    {# ❌ Erreurs globales du formulaire #}
+    {% for error in form_errors(form) %}
+      <div class="alert alert-danger">{{ error.message }}</div>
+    {% endfor %}
 
-        <!-- 🔘 Boutons -->
-        <div class="d-flex justify-content-between mt-5">
-          <a href="{{ path('entreprise_index') }}" class="btn btn-outline-secondary rounded-pill px-4">
-            ⬅️ Retour à la liste
-          </a>
-          <button type="submit" class="btn btn-warning rounded-pill px-4">
-            💾 Enregistrer
-          </button>
-        </div>
-      {{ form_end(form) }}
+    <div class="row g-4">
+      <div class="col-md-6">
+        <label class="form-label">🏢 Nom</label>
+        {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.nom) }}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">👤 Responsable</label>
+        {{ form_widget(form.responsable, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.responsable) }}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">📞 Téléphone</label>
+        {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.telephone) }}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">📧 Email</label>
+        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.email) }}
+      </div>
+
+      <div class="col-md-12">
+        <label class="form-label">📍 Adresse</label>
+        {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.adresse) }}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">🏙️ Ville</label>
+        {{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.ville) }}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">📮 Code postal</label>
+        {{ form_widget(form.code_postale, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.code_postale) }}
+      </div>
     </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+      <a href="{{ path('entreprise_index') }}" class="btn btn-secondary ms-2">↩️ Retour</a>
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
   </div>
-</div>
 {% endblock %}

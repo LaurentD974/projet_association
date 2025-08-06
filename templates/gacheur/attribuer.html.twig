@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Attribuer une entreprise{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+  <h2 class="mb-4">Attribuer une entreprise à {{ user.prenom }} {{ user.nom }}</h2>
+
+  <form method="post">
+    <div class="mb-3">
+      <label for="entreprise_id" class="form-label">Entreprise</label>
+      <select name="entreprise_id" id="entreprise_id" class="form-select">
+        {% for entreprise in entreprises %}
+          <option value="{{ entreprise.id }}" {% if user.entreprise and user.entreprise.id == entreprise.id %}selected{% endif %}>
+            {{ entreprise.nom }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Attribuer</button>
+    <a href="{{ path('gacheur_utilisateurs', { position: user.position }) }}" class="btn btn-secondary ms-2">Annuler</a>
+  </form>
+</div>
+{% endblock %}
