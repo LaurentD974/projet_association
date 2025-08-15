@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialisation du mot de passe{% endblock %}
+
+{% block body %}
+<header>
+  <div class="header-left">
+    <a href="https://www.compagnons-du-devoir.com/" target="_blank" rel="noopener">
+      <img
+        src="{{ asset('image/aocdtf-logo.svg') }}"
+        alt="Logo des Compagnons du Devoir"
+        class="logo"
+      />
+    </a>
+  </div>
+  <div class="header-center">
+    <h1 class="site-title">
+      Association Ouvrière des Compagnons du Devoir et du Tour de France<br />
+      <span class="ile" aria-label="île">🏝️</span> Île de la Réunion
+      <span class="palmier" aria-label="Palmier">🌴</span>
+    </h1>
+  </div>
+ 
+</header>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+
+      <!-- Logo -->
+      <div class="text-center mb-4">
+        <img src="{{ asset('image/logo_province_reunion.png') }}" alt="Logo de la Province" width="100">
+      </div>
+
+      <h2 class="text-center mb-3">🔁 Réinitialisation du mot de passe</h2>
+      <p class="text-muted text-center mb-4">
+        Veuillez saisir votre adresse e-mail. Un lien de réinitialisation vous sera envoyé si elle est associée à un compte.
+      </p>
+
+      <!-- Messages flash -->
+      {% for label, messages in app.flashes %}
+        {% for message in messages %}
+          <div class="alert alert-{{ label == 'error' ? 'danger' : (label == 'success' ? 'success' : 'info') }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endfor %}
+
+      <!-- Formulaire -->
+      {{ form_start(requestForm) }}
+        <div class="mb-3">
+          {{ form_label(requestForm.email, 'Adresse e-mail', {'label_attr': {'class': 'form-label'}}) }}
+          {{ form_widget(requestForm.email, {'attr': {'class': 'form-control', 'placeholder': 'ex : jean.dupont@example.com'}}) }}
+          {{ form_errors(requestForm.email) }}
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary">📩 Recevoir le lien de réinitialisation</button>
+        </div>
+      {{ form_end(requestForm) }}
+
+      <!-- Lien retour -->
+      <div class="mt-4 text-center">
+        <a href="{{ path('app_login') }}" class="btn btn-outline-secondary">🔙 Retour à la page de connexion</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

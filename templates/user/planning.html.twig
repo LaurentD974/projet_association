@@ -1,14 +1,21 @@
 {% extends 'base.html.twig' %}
+{% set hide_footer = true %}
 
 {% block title %}Planning{% endblock %}
 
 {% block stylesheets %}
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  {# <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet"> #}
   <style>
     .fc-toolbar-title {
       font-size: 1.5rem;
       color: #2c3e50;
     }
+    body {
+  background: linear-gradient(135deg, #b39f6b, #e8eaeb);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
     #calendar {
       max-width: 900px;
       margin: 20px auto;
@@ -19,9 +26,10 @@
     }
     .titre-planning {
       text-align: center;
-      margin-top: 30px;
+      margin: 20px auto 10px 0;
       font-size: 2rem;
-      color: #34495e;
+      color: black;
+      max-width: 900px;
     }
     .fc-event-time {
       font-weight: bold;
@@ -32,24 +40,117 @@
       color: #f9f9f9;
     }
     .planning-actions {
+      max-width: 900px;
+      margin: 10px auto 0 auto;
       display: flex;
       justify-content: flex-end;
       gap: 10px;
-      margin: 10px 30px 0 0;
     }
     .planning-actions .btn {
       padding: 6px 12px;
+  margin-top: 20px; /* ou plus selon le rendu souhaité */
       font-size: 0.9rem;
       border-radius: 6px;
       text-decoration: none;
     }
+    .btn-marron {
+  background-color: #8B4513;
+  color: white;
+  border: none;
+}
+
+.btn-marron:hover {
+  background-color: #A0522D;
+}
+
+
+  #newsCarousel {
+    max-width: 900px;
+    margin: 2px auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+
+  .carousel-item h4,
+  .carousel-item p {
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .carousel-item {
+    min-height: auto;
+  }
+.carousel-banner {
+  background-color: #f8f9fa;
+  padding: 4px 8px;
+  min-height: 60px;
+}
+
+
+.carousel-title,
+.carousel-content {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+  font-size: 1rem;
+}
+
+
+.carousel-title {
+  color: brown;
+  font-weight: 600;
+}
+
+
+.carousel-content {
+  color: #333;
+  margin-left: 1cm; /* espace d’un centimètre entre titre et contenu */
+}
+
+
+
   </style>
 {% endblock %}
 
 {% block body %}
+<div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
+  <!-- Indicateurs -->
+  <div class="carousel-indicators">
+    {% for news in news_list %}
+      <button type="button"
+              data-bs-target="#newsCarousel"
+              data-bs-slide-to="{{ loop.index0 }}"
+              class="{% if loop.first %}active{% endif %}"
+              aria-current="{% if loop.first %}true{% endif %}"
+              aria-label="Slide {{ loop.index }}">
+      </button>
+    {% endfor %}
+  </div>
+
+  <!-- Slides -->
+  <div class="carousel-inner">
+    {% for news in news_list %}
+      {% if news.title or news.content %}
+      <div class="carousel-item {% if loop.first %}active{% endif %}">
+  <div class="carousel-banner px-4 py-2">
+    <h4 class="carousel-title mb-0 d-inline-block">{{ news.title }}</h4>
+    <p class="carousel-content mb-0 d-inline-block ms-4">{{ news.content }}</p>
+  </div>
+</div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+ 
+
   <div class="planning-actions">
-    <a href="{{ path('user_search') }}" class="btn btn-outline-primary">🔙 Trombinoscope</a>
-    <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
+    <h2 class="titre-planning">PLANNING DE L'ASSOCIATION</h2>
+    <a href="{{ path('user_search') }}" class="btn btn-marron">🔙 Trombinoscope</a>
+    <a href="{{ path('home') }}" class="btn btn-marron">🏠 Accueil</a>
     {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
       <a 
         href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
@@ -62,9 +163,8 @@
         {% endif %}
       </a>
     {% endif %}
-    </div>
+  </div>
 
-  <h2 class="titre-planning">Planning de l'association</h2>
   <div id="calendar"></div>
 {% endblock %}
 
@@ -121,7 +221,7 @@
           const props = e.extendedProps;
 
           const startDate = new Date(e.start);
-          const endDate = new Date(startDate.getTime() + 4 * 60 * 60 * 1000); // 4h par défaut
+          const endDate = new Date(startDate.getTime() + 4 * 60 * 60 * 1000);
 
           const pad = v => v.toString().padStart(2, '0');
           const formatGoogle = date =>
@@ -146,7 +246,7 @@
           const modal = document.createElement('div');
           modal.innerHTML = `
             <div style="padding:20px; font-family: Arial, sans-serif;">
-              <h3 style="margin-top:0;">${e.title}</h3>
+                         <h3 style="margin-top:0;">${e.title}</h3>
               <p><strong>Début :</strong> ${startDate.toLocaleDateString()}</p>
               <p><strong>Fin :</strong> ${endDate.toLocaleString()}</p>
               <p><strong>Lieu :</strong> ${props.location || 'Non renseigné'}</p>

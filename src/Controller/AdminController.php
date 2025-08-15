@@ -111,10 +111,4 @@ class AdminController extends AbstractController
         $this->addFlash('success', 'Événement validé.');
         return $this->redirectToRoute('admin_events_list');
     }
-
-    #[Route('/news', name: 'admin_news')]
-    public function manageNews(): Response
-    {
-        return $this->render('admin/news.html.twig');
-    }
 }

@@ -5,28 +5,23 @@
     <title>{% block title %}Bienvenue!{% endblock %}</title>
     <link rel="icon" type="image/png" href="{{ asset('image/favicon-aocdtf.png') }}">
 
-    {# Désactivation temporaire de Turbo #}
     <script>
         window.Turbo = { session: { drive: false } };
     </script>
 
-    {# Bootstrap CSS #}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="/build/app.css">
 
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
     {% endblock %}
 
-    {# Bootstrap JS #}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     {% block javascripts %}
         {{ encore_entry_script_tags('app') }}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
 
-        {# 🔔 Script pour masquer les alertes après 5 secondes #}
         <script>
             setTimeout(() => {
                 const alerts = document.querySelectorAll('.alert');
@@ -39,5 +34,126 @@
 </head>
 <body>
     {% block body %}{% endblock %}
+
+    {% if not app.request.cookies.get('cookie_consent') %}
+        <div class="cookie-banner">
+            <p>Ce site utilise des cookies pour améliorer votre expérience. En continuant, vous acceptez leur utilisation.</p>
+            <button id="acceptCookies" class="btn btn-primary">Accepter</button>
+            <div id="cookie-confirmation" class="mt-2 text-success" style="display: none;">
+                Merci, vos préférences ont été enregistrées.
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('acceptCookies').addEventListener('click', function () {
+                fetch('/accept-cookies', { method: 'POST' })
+                    .then(() => {
+                        document.getElementById('acceptCookies').style.display = 'none';
+                        document.querySelector('.cookie-banner p').style.display = 'none';
+                        document.getElementById('cookie-confirmation').style.display = 'block';
+                        setTimeout(() => {
+                            document.querySelector('.cookie-banner').style.display = 'none';
+                        }, 4000);
+                    });
+            });
+        </script>
+
+        <style>
+            .cookie-banner {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: #f8f9fa;
+                padding: 1rem;
+                text-align: center;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                z-index: 9999;
+            }
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            main {
+                flex: 1;
+            }
+        </style>
+    {% endif %}
+{% set hide_footer = hide_footer|default(false) %}
+    {% if not hide_footer %}
+    <footer class="footer mt-5">
+        <div class="footer-content">
+            <p>&copy; 2025 AOCDTF - Île de la Réunion 🌴 | Tous droits réservés</p>
+            <p>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#legalModal">Mentions légales</a> |
+                <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Politique de confidentialité</a>
+            </p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/compagnonsdudevoir" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ asset('image/facebook_logo_icon_257007.webp') }}" alt="Icône Facebook" />
+                </a>
+                <a href="https://www.instagram.com/les_compagnons/" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ asset('image/instagram_icon.png.webp') }}" alt="Icône Instagram" />
+                </a>
+                <a href="https://www.linkedin.com/company/les-compagnons-du-devoir/?trk=biz-companies-cym" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ asset('image/linkedin-icon.png') }}" alt="Icône LinkedIn" />
+                </a>
+                <a href="https://www.youtube.com/user/CompagnonsDevoir?sub_confirmation=1" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ asset('image/Youtube-icon.webp') }}" alt="Icône YouTube" />
+                </a>
+                <a href="https://www.tiktok.com/@lescompagnonsdudevoir" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ asset('image/tiktok-outline.svg') }}" alt="Icône TikTok" />
+                </a>
+                <a href="https://twitter.com/les_compagnons" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ asset('image/icon-twitter.png') }}" alt="Icône Twitter" />
+                </a>
+            </div>
+        </div>
+    </footer>
+    {% endif %}
+
+    <!-- Modal Mentions légales -->
+    <div class="modal fade" id="legalModal" tabindex="-1" aria-labelledby="legalModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="legalModalLabel">Mentions légales</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Éditeur :</strong> Association Ouvrière des Compagnons du Devoir</p>
+                    <p><strong>Responsable de la publication :</strong> Le Provincial</p>
+                    <p><strong>Hébergement :</strong> OVH - 2 rue Kellermann, 59100 Roubaix</p>
+                    <p><strong>Contact :</strong> <a href="{{ path('contact_form') }}" class="btn">Formulaire de contact</a></p>
+                    <p><strong>RGPD :</strong> Ce site respecte la réglementation sur la protection des données personnelles.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Politique de confidentialité -->
+    <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="privacyModalLabel">Politique de confidentialité</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Nous collectons uniquement les données nécessaires au bon fonctionnement du site et à la gestion des demandes via le formulaire de contact.</p>
+                    <p>Aucune donnée n’est transmise à des tiers sans consentement explicite.</p>
+                    <p>Conformément au RGPD, vous pouvez exercer vos droits d’accès, de rectification ou de suppression en nous contactant : <strong><a href="{{ path('contact_form') }}" class="btn">Formulaire de contact</a></strong>.</p>
+                    <p>Ce site utilise des cookies techniques pour améliorer l’expérience utilisateur. Aucun cookie publicitaire n’est utilisé.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

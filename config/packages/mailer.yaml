@@ -3,5 +3,6 @@ framework:
     mailer:
         dsn: "%env(MAILER_DSN)%"
         envelope:
-            sender: "u8759513205@gmail.com"
+            sender: "aocdtf.lareunion.974@gmail.com"
+        message_bus: false
       

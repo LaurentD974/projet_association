@@ -35,7 +35,7 @@
     </div>
   {% endfor %}
 
-  <h1 class="mb-4 text-center text-success">Tableau de bord Maitre de métier</h1>
+  <h1 class="mb-4 text-center" style="color: #664315;">Tableau de bord Maitre de métier</h1>
 
   <div class="row g-4">
    <!-- 📋 Événements de mon métier -->
@@ -103,31 +103,19 @@
     </div>
   </div>
 </div>
-   <!-- 🧑‍🔧 Utilisateurs de mon métier -->
+   <!-- 🧑‍🔧 Gestion des embauches -->
 <div class="col-md-3">
   <div class="card shadow border-0 h-100">
     <div class="card-body text-center d-flex flex-column h-100">
       <div>
-        <h5 class="card-title">🧑‍🔧 Itinérants de ma corporation</h5>
+        <h5 class="card-title">🧑‍🔧 Gestion des embauches</h5>
         <p class="card-text">Attribuer une entreprise aux itinérants et aux sédentaires.</p>
       </div>
       <a href="{{ path('gacheur_utilisateurs', { position: 'Itinérant' }) }}" class="btn btn-dark mt-auto">Accéder</a>
     </div>
   </div>
 </div>
-<!-- 🧭 Associer un référent -->
-<div class="col-md-3">
-  <div class="card shadow border-0 h-100">
-    <div class="card-body text-center d-flex flex-column h-100">
-      <div>
-        <h5 class="card-title">🧭 Associer un référent</h5>
-        <p class="card-text">Définissez les liens de responsabilité entre les membres.</p>
-        <p class="card-text">Choisissez une personne référente et associez-la à un utilisateur sous sa responsabilité.</p>
-      </div>
-      <a href="{{ path('associer_referent') }}" class="btn btn-outline-success mt-auto">Associer</a>
-    </div>
-  </div>
-</div>
+
 <!-- 🔗 Voir les associations référent ↔ utilisateur -->
 <div class="col-md-3">
   <div class="card shadow border-0 h-100">
@@ -137,6 +125,19 @@
         <p class="card-text">Consultez toutes les associations entre les membres et leurs référents.</p>
       </div>
       <a href="{{ path('gacheur_referents_utilisateurs') }}" class="btn btn-outline-primary mt-auto">Voir la liste</a>
+    </div>
+  </div>
+</div>
+<!-- 📋 Diffusion d'informations -->
+<div class="col-md-3">
+  <div class="card shadow border-0 h-100">
+    <div class="card-body text-center d-flex flex-column h-100">
+      <div>
+        <h5 class="card-title">📋 Diffuser une information par mail à ma corporation</h5>
+        <p class="card-text">Faire une relance pour les inscriptions à un évènement.</p>
+        <p class="card-text">Diffuser une NEWS à ma corporation.</p>
+      </div>
+      <a href="{{ path('envoyer-email') }}" class="btn btn-outline-success mt-auto">Accéder</a>
     </div>
   </div>
 </div>

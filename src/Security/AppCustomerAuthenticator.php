@@ -76,4 +76,15 @@ class AppCustomerAuthenticator extends AbstractLoginFormAuthenticator implements
         // Redirige vers la page de login
         return new RedirectResponse($this->urlGenerator->generate(self::LOGIN_ROUTE));
     }
+    public function supports(Request $request): bool
+{
+    // Ne pas activer l'authentificateur pour la route de contact
+    if ($request->getPathInfo() === '/contact/send') {
+        return false;
+    }
+
+    // Activer uniquement pour la route de login
+    return $request->attributes->get('_route') === self::LOGIN_ROUTE
+        && $request->isMethod('POST');
+}
 }

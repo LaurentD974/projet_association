@@ -3,69 +3,75 @@
 {% block title %}Profil du membre{% endblock %}
 
 {% block body %}
+<div class="container my-5">
 
-<div class="member-header2">
-  <h1 class="member-title2">Profil de {{ member.nom }} {{ member.prenom }}</h1>
-  <div class="member-actions">
-    <a href="{{ path('user_search') }}" class="btn btn-outline-primary">🔙 Trombinoscope</a>
-    <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
-    {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
-      <a 
-        href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
-        class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}"
-      >
-        {% if 'ROLE_ADMIN' in app.user.roles %}
-          🛠️ Dashboard Admin
-        {% else %}
-          🎯 Dashboard Gâcheur
-        {% endif %}
-      </a>
-    {% endif %}
-  </div>
-</div>
-
-<div class="member-card2">
-  <div class="member-info2">
-    <h2>{{ member.nom }} {{ member.prenom }}</h2>
-    <p><strong>Métier :</strong> {{ member.metier }}</p>
-    <p><strong>Gâche(s) :</strong> {{ member.fonction1 }} {{ member.fonction2 }}</p>
-    <p><strong>État :</strong> {{ member.statut }} {{ member.position }}</p>
-    <p><strong>Nom de province :</strong> {{ member.nomprovince }} {{ member.nomcompagnon }}</p> 
-    <p><strong>Téléphone :</strong> {{ member.telephone }}</p>
-    <p><strong>Email :</strong> ✉️ <a href="mailto:{{ member.email }}">{{ member.email }}</a></p>
-    <p><strong>Adresse :</strong> {{ member.adresse1 }}</p>
-    <p><strong>Complément :</strong> {{ member.adresse2 }}</p>
-    <p><strong>Code postal :</strong> {{ member.codepostale }}</p>
-    <p><strong>Ville :</strong> {{ member.ville }}</p>
-    
-    {% if member.entreprise %}
-      <p><strong>Embauche :</strong>
-        <a href="{{ path('entreprise_show', { id: member.entreprise.id }) }}">
-          {{ member.entreprise.nom }}
+  <div class="member-header2">
+    <h1 class="member-title2">Profil de {{ member.nom }} {{ member.prenom }}</h1>
+    <div class="member-actions">
+      <a href="{{ path('user_search') }}" class="btn btn-outline-primary">🔙 Trombinoscope</a>
+      <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
+      {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
+        <a 
+          href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
+          class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}"
+        >
+          {% if 'ROLE_ADMIN' in app.user.roles %}
+            🛠️ Dashboard Admin
+          {% else %}
+            🎯 Dashboard Gâcheur
+          {% endif %}
         </a>
-      </p>
-    {% else %}
-      <p><strong>Entreprise :</strong> Non attribuée</p>
-    {% endif %}
-
-    {% if member.dateArrivee is not null %}
-      <p><strong>Date d'arrivée :</strong> {{ member.dateArrivee|date('d/m/Y') }}</p>
-    {% endif %}
-
-    {% if member.dateDepart is not null %}
-      <p><strong>Date de départ :</strong> {{ member.dateDepart|date('d/m/Y') }}</p>
-    {% endif %}
+      {% endif %}
+    </div>
   </div>
 
-  <div class="member-photo2">
-    {% if member.photo %}
-      <img src="{{ asset('uploads/photos/' ~ member.photo) }}"
-           alt="Photo de {{ member.nom }} {{ member.prenom }}"
-           onerror="this.onerror=null;this.src='{{ asset('image/default-avatar.png') }}';">
-    {% else %}
-      <img src="{{ asset('image/default-avatar.png') }}"
-           alt="Photo par défaut de {{ member.nom }} {{ member.prenom }}">
-    {% endif %}
-  </div>  
+  <div class="member-card2 d-flex flex-wrap gap-4">
+    <div class="member-info2 flex-grow-1">
+      <h2>{{ member.nom }} {{ member.prenom }}</h2>
+      <p><strong>Métier :</strong> {{ member.metier }}</p>
+      <p><strong>Gâche(s) :</strong> {{ member.fonction1 }} {{ member.fonction2 }}</p>
+      <p><strong>État :</strong> {{ member.statut }} {{ member.position }}</p>
+      <p><strong>Nom de province :</strong> {{ member.nomprovince }} {{ member.nomcompagnon }}</p> 
+      <p><strong>Téléphone :</strong> {{ member.telephone }}</p>
+      <p><strong>Email :</strong> ✉️ <a href="mailto:{{ member.email }}">{{ member.email }}</a></p>
+      {% if member.passetemps is not null %}
+        <p><strong>Passe temps :</strong> {{ member.passetemps }}</p>
+      {% endif %}
+      <p><strong>Adresse :</strong> {{ member.adresse1 }}</p>
+      <p><strong>Complément :</strong> {{ member.adresse2 }}</p>
+      <p><strong>Code postal :</strong> {{ member.codepostale }}</p>
+      <p><strong>Ville :</strong> {{ member.ville }}</p>
+      
+      {% if member.entreprise %}
+        <p><strong>Embauche :</strong>
+          <a href="{{ path('entreprise_show', { id: member.entreprise.id }) }}">
+            {{ member.entreprise.nom }}
+          </a>
+        </p>
+      {% else %}
+        <p><strong>Entreprise :</strong> Non attribuée</p>
+      {% endif %}
 
+      {% if member.dateArrivee is not null %}
+        <p><strong>Date d'arrivée :</strong> {{ member.dateArrivee|date('d/m/Y') }}</p>
+      {% endif %}
+
+      {% if member.dateDepart is not null %}
+        <p><strong>Date de départ :</strong> {{ member.dateDepart|date('d/m/Y') }}</p>
+      {% endif %}
+    </div>
+
+    <div class="member-photo2">
+      {% if member.photo %}
+        <img src="{{ asset('uploads/photos/' ~ member.photo) }}"
+             alt="Photo de {{ member.nom }} {{ member.prenom }}"
+             onerror="this.onerror=null;this.src='{{ asset('image/default-avatar.png') }}';">
+      {% else %}
+        <img src="{{ asset('image/default-avatar.png') }}"
+             alt="Photo par défaut de {{ member.nom }} {{ member.prenom }}">
+      {% endif %}
+    </div>
+  </div>
+
+</div>
 {% endblock %}

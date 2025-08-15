@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 
 class UserCrudController extends AbstractCrudController
@@ -23,7 +22,6 @@ class UserCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            // Champs visibles sur la page INDEX et aussi éditables
             TextField::new('nom'),
             TextField::new('prenom'),
             TextField::new('metier'),
@@ -33,17 +31,22 @@ class UserCrudController extends AbstractCrudController
             TextField::new('fonction1'),
             TextField::new('fonction2'),
             TextField::new('statut'),
-            TextField::new('nom_province'),
-            TextField::new('nom_compagnon'),
-            // Autres champs visibles uniquement en EDITION
+            TextField::new('nomProvince'),
+            TextField::new('nomCompagnon'),
+
+            TextField::new('plainPassword')
+                ->onlyOnForms()
+                ->setFormTypeOption('required', $pageName === Crud::PAGE_NEW)
+                ->setFormTypeOption('mapped', true)
+                ->setFormTypeOption('attr', ['autocomplete' => 'new-password']),
+
             TextField::new('adresse1')->hideOnIndex(),
             TextField::new('adresse2')->hideOnIndex(),
-            TextField::new('code_postale')->hideOnIndex(),
+            TextField::new('codePostale')->hideOnIndex(),
             TextField::new('ville')->hideOnIndex(),
             TextField::new('position')->hideOnIndex(),
             TextField::new('droit')->hideOnIndex(),
             TextField::new('photo')->hideOnIndex(),
-           
         ];
     }
 

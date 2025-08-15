@@ -24,6 +24,7 @@
                     {% if encadre.email %}
                         — <a href="mailto:{{ encadre.email }}">{{ encadre.email }}</a>
                     {% endif %}
+                    — {{ encadre.telephone }}
                 </li>
             {% else %}
                 <li class="list-group-item">Aucun utilisateur encadré.</li>

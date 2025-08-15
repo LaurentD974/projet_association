@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\EventRepository;
+use App\Repository\NewsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,9 +13,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class PlanningController extends AbstractController
 {
     #[Route('/planning', name: 'app_planning')]
-    public function index(): Response
+    public function index(NewsRepository $newsRepository): Response
     {
-        return $this->render('user/planning.html.twig');
+        $newsList = $newsRepository->findBy([], ['createdAt' => 'DESC']); // tri par date décroissante
+
+        return $this->render('user/planning.html.twig', [
+            'news_list' => $newsList,
+        ]);
     }
 
     #[Route('/api/events', name: 'api_events')]

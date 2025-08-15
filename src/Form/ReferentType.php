@@ -16,16 +16,16 @@ class ReferentType extends AbstractType
         $builder
             ->add('referent', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => fn(User $user) => $user->getPrenom() . ' ' . $user->getNom(),
+                'choice_label' => fn(User $user) => $user->getPrenom() . ' ' . $user->getNom() . ' | ' . $user->getMetier() . ' | ' . $user->getStatut() . ' ' . $user->getPosition(),
                 'label' => '👤 Personne référente',
-                'placeholder' => 'Sélectionner un référent',
+                'placeholder' => 'Sélectionner un référent (Ancien)',
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('responsableDe', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => fn(User $user) => $user->getPrenom() . ' ' . $user->getNom(),
+                'choice_label' => fn(User $user) => $user->getPrenom() . ' ' . $user->getNom() . ' | ' . $user->getMetier() . ' | ' . $user->getStatut() . ' ' . $user->getPosition(),
                 'label' => '👥 Est responsable de',
-                'placeholder' => 'Sélectionner un responsable',
+                'placeholder' => 'Sélectionner un itinérant',
                 'attr' => ['class' => 'form-select'],
             ]);
     }

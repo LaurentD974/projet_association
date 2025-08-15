@@ -5,7 +5,8 @@
 {% block body %}
   <div class="container mt-5">
     <div class="d-flex justify-content-end mb-3">
-      <a href="{{ path('user_search') }}" class="btn btn-outline-primary me-2">🔙 Trombinoscope</a>
+    <a href="{{ path('app_planning') }}" class="btn btn-primary">🔙 Retour au planning</a>
+      <a href="{{ path('user_search') }}" class="btn btn-outline-primary me-2">Trombinoscope</a>
       <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
       {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
       <a 
@@ -62,11 +63,11 @@
       </div>
     </div>
 
-    <div class="card border-info">
-      <div class="card-header bg-info text-white">
+    <div class="card" style="border: 1px solid #664315;">
+     <div class="card-header text-white" style="background-color: #664315;">
         <div class="row">
-          <div class="col-md-6">📅 Ajouter à mon agenda</div>
-          <div class="col-md-6 text-end">✍️ S'inscrire à l'événement</div>
+          <div class="col-md-6">📅 Ajouter à mon agenda personnel</div>
+          <div class="col-md-6">✍️ S'inscrire à l'événement</div>
         </div>
       </div>
       <div class="card-body">

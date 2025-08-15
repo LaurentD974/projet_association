@@ -1,110 +1,137 @@
-{# templates/home.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-  <header>
-    <div class="header-left">
-      <a href="https://www.compagnons-du-devoir.com/" target="_blank" rel="noopener">
-        <img
-          src="{{ asset('image/aocdtf-logo.svg') }}"
-          alt="Logo des Compagnons du Devoir"
-          class="logo"
-        />
-      </a>
-    </div>
-    <div class="header-center">
-      <h1 class="site-title">
-        Association Ouvrière des Compagnons du Devoir et du Tour de France<br />
-        <span class="ile" aria-label="île">🏝️</span> Île de la Réunion
-        <span class="palmier" aria-label="Palmier">🌴</span>
-      </h1>
-    </div>
-    <div class="header-right">
-      <a href="{{ path('contact_form') }}" class="btn">Contact</a>
-      {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-        <a href="{{ path('app_logout') }}" class="btn">Se déconnecter</a>
-      {% else %}
-        <a href="{{ path('app_login') }}" class="btn">Se connecter</a>
-      {% endif %}
-    </div>
-  </header>
+<style>
+  .custom-spacing .col-md-4 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 
-  {# 🔔 Bloc d'affichage des messages flash #}
-  {% for label, messages in app.flashes %}
-    {% for message in messages %}
-      <div class="alert alert-{{ label }} alert-dismissible fade show mt-3 mx-3" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
-      </div>
-    {% endfor %}
+  @media (max-width: 767px) {
+    .custom-spacing .col-md-4 {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .carousel-item {
+    padding: 1rem;
+  }
+
+  .modal-body p {
+    margin-bottom: 1rem;
+  }
+</style>
+
+<header>
+  <div class="header-left">
+    <a href="https://www.compagnons-du-devoir.com/" target="_blank" rel="noopener">
+      <img
+        src="{{ asset('image/aocdtf-logo.svg') }}"
+        alt="Logo des Compagnons du Devoir"
+        class="logo"
+      />
+    </a>
+  </div>
+  <div class="header-center">
+    <h1 class="site-title">
+      Association Ouvrière des Compagnons du Devoir et du Tour de France<br />
+      <span class="ile" aria-label="île">🏝️</span> Île de la Réunion
+      <span class="palmier" aria-label="Palmier">🌴</span>
+    </h1>
+  </div>
+  <div class="header-right">
+    <a href="{{ path('contact_form') }}" class="btn">Contact</a>
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+      <a href="{{ path('app_logout') }}" class="btn">Se déconnecter</a>
+    {% else %}
+      <a href="{{ path('app_login') }}" class="btn">Se connecter</a>
+    {% endif %}
+  </div>
+</header>
+
+{% for label, messages in app.flashes %}
+  {% for message in messages %}
+    <div class="alert alert-{{ label }} alert-dismissible fade show mt-3 mx-3" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
   {% endfor %}
+{% endfor %}
 
-  <main>
-    <section class="content-section">
-      <div class="text-block">
-        <h2>Qui sommes-nous ?</h2>
-        <p>
-          L’Association Ouvrière des Compagnons du Devoir et du Tour de France (AOCDTF)
-          est une association loi de 1901, reconnue d’utilité publique. Elle réunit des
-          hommes et des femmes de métier autour d’un même idéal : permettre à chacun
-          de s’accomplir dans et par son métier.<br /><br />
+<main>
+  <section class="container mt-5 custom-spacing">
+    <div class="row gy-4 align-items-stretch">
+      <div class="col-12 col-md-4 d-flex flex-column justify-content-between">
+        <div>
+          <h2>Qui sommes-nous ?</h2>
+          <p>
+            L’Association Ouvrière des Compagnons du Devoir et du Tour de France (AOCDTF)
+            est une association loi de 1901, reconnue d’utilité publique. Elle réunit des
+            hommes et des femmes de métier autour d’un même idéal : permettre à chacun
+            de s’accomplir dans et par son métier.<br /><br />
 
-          Elle transmet des savoir-faire techniques et des valeurs humaines comme la
-          solidarité, la fraternité et la générosité.<br /><br />
+            Elle transmet des savoir-faire techniques et des valeurs humaines comme la
+            solidarité, la fraternité et la générosité.<br /><br />
 
-          Grâce à la qualité de sa formation, à ses expériences en entreprise et à son
-          ouverture à l’international, l’AOCDTF a intégré la Conférence des grandes écoles
-          en 2014.<br /><br />
+            Grâce à la qualité de sa formation, à ses expériences en entreprise et à son
+            ouverture à l’international, l’AOCDTF a intégré la Conférence des grandes écoles
+            en 2014.<br /><br />
 
-          Le compagnonnage est une expérience humaine, culturelle et professionnelle,
-          reconnue depuis 2010 par l’Unesco comme patrimoine culturel immatériel.
-        </p>
+            Le compagnonnage est une expérience humaine, culturelle et professionnelle,
+            reconnue depuis 2010 par l’Unesco comme patrimoine culturel immatériel.
+          </p>
+        </div>
       </div>
-      <div class="image-block">
+
+      <div class="col-12 col-md-5 d-flex align-items-center justify-content-center">
         <img
           src="{{ asset('image/Photo-de-groupe-CFA-Tours-768x768.jpg') }}"
           alt="Photo de groupe des Compagnons du Devoir"
+          class="img-fluid rounded shadow"
         />
       </div>
-    </section>
-  </main>
 
-  <footer class="footer">
-    <div class="footer-content">
-      <p>&copy; 2025 AOCDTF - Île de la Réunion 🌴 | Tous droits réservés</p>
-      <p>        |
-        <a href="https://www.compagnons-du-devoir.com/" target="_blank" rel="noopener">
-          Site officiel
-        </a> |
-      </p>
+      <div class="col-12 col-md-3 d-flex flex-column justify-content-between">
+        <div class="card shadow-sm h-100">
+          <div class="card-header text-white" style="background-color: #d2b48c;">
+            <h4 class="mb-0"><i class="bi bi-megaphone-fill me-2"></i>Dernières actualités</h4>
+          </div>
+          <div class="card-body">
+            {% if newsList|length > 0 %}
+              <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="7000">
+                <div class="carousel-inner w-100">
+                  {% for news in newsList %}
+                    {% if news.isPublished %}
+                      <div class="carousel-item w-100 {% if loop.first %}active{% endif %}">
+                        <h5 class="text-dark">{{ news.title }}</h5>
+                        <p class="text-muted">
+                          {{ news.content|length > 250 ? news.content[:250] ~ '...' : news.content }}
+                        </p>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
 
-      <div class="social-icons">
-        <a href="https://www.facebook.com/compagnonsdudevoir"target="_blank" rel="noopener noreferrer">
-          <img src="{{ asset('image/facebook_logo_icon_257007.webp') }}" alt="Icône Facebook" />
-        </a>
-
-        <a href="https://www.instagram.com/les_compagnons/"target="_blank" rel="noopener noreferrer">
-          <img src="{{ asset('image/instagram_icon.png.webp') }}" alt="Icône Instagram" />
-        </a>
-
-        <a href="https://www.linkedin.com/company/les-compagnons-du-devoir/?trk=biz-companies-cym"target="_blank" rel="noopener noreferrer">
-          <img src="{{ asset('image/linkedin-icon.png') }}" alt="Icône LinkedIn" />
-        </a>
-
-        <a href="https://www.youtube.com/user/CompagnonsDevoir?sub_confirmation=1"target="_blank" rel="noopener noreferrer">
-          <img src="{{ asset('image/youtube_icon.png') }}" alt="Icône YouTube" />
-        </a>   
-
-        <a href="https://www.tiktok.com/@lescompagnonsdudevoir"target="_blank" rel="noopener noreferrer">
-          <img src="{{ asset('image/tiktok-outline.svg') }}" alt="Icône TikTok" />
-        </a>
-
-        <a href="https://twitter.com/les_compagnons"target="_blank" rel="noopener noreferrer">
-          <img src="{{ asset('image/icon-twitter.png') }}" alt="Icône Twitter" />
-        </a>
+                <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Précédent</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Suivant</span>
+                </button>
+              </div>
+            {% else %}
+              <p class="text-center text-muted">Aucune actualité publiée pour le moment.</p>
+            {% endif %}
+          </div>
+        </div>
       </div>
     </div>
-  </footer>
+  </section>
+</main>
+
 {% endblock %}

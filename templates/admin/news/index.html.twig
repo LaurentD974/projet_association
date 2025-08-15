@@ -1,0 +1,65 @@
+{# templates/admin/news/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des actualités{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">📰 Gestion des actualités</h1>
+    <div class="d-flex gap-3">
+        <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-house-door"></i> Retour au tableau de bord
+        </a>
+        <a href="{{ path('admin_news_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Créer une nouvelle actualité
+        </a>
+    </div>
+</div>
+</div>
+
+    {% if newsList is empty %}
+        <div class="alert alert-info text-center">
+            Aucune actualité trouvée.
+        </div>
+    {% else %}
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Titre</th>
+                    <th>Contenu</th>
+                    <th>Créé le</th>
+                    <th>Publique</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for news in newsList %}
+                    <tr>
+                        <td>{{ news.id }}</td>
+                        <td>{{ news.title }}</td>
+                        <td>{{ news.content|length > 100 ? news.content[:100] ~ '...' : news.content }}</td>
+                        <td>{{ news.createdAt|date('d/m/Y') }}</td>
+                        <td>
+                            {% if news.published %}
+                                <span class="badge bg-success">Oui</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Non</span>
+                            {% endif %}
+                        </td>
+                        <td class="d-flex gap-2">
+                            <a href="{{ path('admin_news_edit', {'id': news.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+
+                            <form method="post" action="{{ path('admin_news_delete', {'id': news.id}) }}" onsubmit="return confirm('Supprimer cette actualité ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ news.id) }}">
+                                <button class="btn btn-sm btn-danger">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}

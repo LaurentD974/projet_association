@@ -1,0 +1,51 @@
+{# templates/email/send.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Envoyer un email{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+     <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>📤 Envoyer un message à ma corporation</h2>
+        <a href="{{ path('gacheur_dashboard') }}" class="btn btn-outline-secondary">
+            ⬅️ Retour au Dashboard
+        </a>
+    </div>
+
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {{ form_start(form) }}
+
+            <div class="mb-3">
+                {{ form_label(form.expediteur) }}
+                {{ form_widget(form.expediteur, {'attr': {'class': 'form-control'}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.message) }}
+                {{ form_widget(form.message, {'attr': {'class': 'form-control', 'rows': 6}}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.destinataires) }}
+                {{ form_widget(form.destinataires, {'attr': {'class': 'form-control'}}) }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                ✉️ Envoyer le message
+            </button>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

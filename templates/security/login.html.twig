@@ -3,6 +3,25 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
+<header>
+  <div class="header-left">
+    <a href="https://www.compagnons-du-devoir.com/" target="_blank" rel="noopener">
+      <img
+        src="{{ asset('image/aocdtf-logo.svg') }}"
+        alt="Logo des Compagnons du Devoir"
+        class="logo"
+      />
+    </a>
+  </div>
+  <div class="header-center">
+    <h1 class="site-title">
+      Association Ouvrière des Compagnons du Devoir et du Tour de France<br />
+      <span class="ile" aria-label="île">🏝️</span> Île de la Réunion
+      <span class="palmier" aria-label="Palmier">🌴</span>
+    </h1>
+  </div>
+ 
+</header>
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-6">
@@ -36,23 +55,24 @@
           <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-1">
           <label for="inputPassword" class="form-label">Mot de passe</label>
           <input type="password" name="password" id="inputPassword" class="form-control" required>
         </div>
 
+        <!-- Lien mot de passe oublié aligné à droite -->
+        <div class="text-end mb-3">
+          <a href="{{ path('app_forgot_password_request') }}" class="text-decoration-none">🔑 Mot de passe oublié ?</a>
+        </div>
+
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-        <div class="d-grid gap-2">
+        <!-- Boutons alignés gauche/droite -->
+        <div class="d-flex justify-content-between mt-4">
           <button type="submit" class="btn btn-primary">Se connecter</button>
+          <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Retour à l’accueil</a>
         </div>
       </form>
-
-      <!-- Liens supplémentaires -->
-      <div class="mt-4 text-center">
-        <a href="{{ path('app_forgot_password') }}">🔑 Mot de passe oublié ?</a><br>
-        <a href="{{ path('home') }}" class="btn btn-outline-secondary mt-3">🏠 Retour à l’accueil</a>
-      </div>
 
     </div>
   </div>

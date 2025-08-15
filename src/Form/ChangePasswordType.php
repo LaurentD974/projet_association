@@ -21,9 +21,9 @@ class ChangePasswordType extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'Veuillez entrer un mot de passe']),
                     new Length([
-                        'min' => 6,
-                        'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères',
-                        'max' => 4096,
+                        'min' => 12,
+                        'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères dont 1 majuscule, 1 minuscule et 1 chiffre',
+                        'max' => 40,
                     ]),
                 ],
             ]);

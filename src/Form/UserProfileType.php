@@ -25,7 +25,9 @@ class UserProfileType extends AbstractType
                 'label' => '📷 Photo de profil',
                 'required' => false,
                 'mapped' => false,
-                'attr' => ['class' => 'form-control'],
+                'attr' => [
+        'accept' => 'image/jpeg,image/png', // ← filtre la fenêtre Windows
+    ],
                 'constraints' => [
                     new File([
                         'maxSize' => '2M',
@@ -58,19 +60,18 @@ class UserProfileType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
             ])
-                ->add('dateArrivee', DateType::class, [
-        'label' => '📅 Date d\'arrivée',
-        'required' => false,
-        'widget' => 'single_text',
-        'attr' => ['class' => 'form-control'],
-    ])
-    ->add('dateDepart', DateType::class, [
-        'label' => '📅 Date de départ',
-        'required' => false,
-        'widget' => 'single_text',
-        'attr' => ['class' => 'form-control'],
-    ])
-
+            ->add('dateArrivee', DateType::class, [
+                'label' => '📅 Date d\'arrivée',
+                'required' => false,
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('dateDepart', DateType::class, [
+                'label' => '📅 Date de départ',
+                'required' => false,
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control'],
+            ])
             ->add('telephone', TextType::class, [
                 'label' => '📞 Téléphone',
                 'required' => false,
@@ -81,6 +82,11 @@ class UserProfileType extends AbstractType
                         'message' => 'Veuillez entrer un numéro de téléphone valide.',
                     ]),
                 ],
+            ])
+            ->add('passetemps', TextType::class, [
+                'label' => '🎯 Passetemps',
+                'required' => false,
+                'attr' => ['class' => 'form-control', 'placeholder' => 'Ex: lecture, randonnée, musique'],
             ])
             ->add('currentPassword', PasswordType::class, [
                 'label' => '🔒 Mot de passe actuel',

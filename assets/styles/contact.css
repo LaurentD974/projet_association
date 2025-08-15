@@ -1,14 +1,14 @@
 .contact-section {
-  background-color: #f4f8fc;
+   background: linear-gradient(135deg, #b39f6b, #e8eaeb);
   padding: 60px 20px;
-  border-top: 4px solid #0077cc;
+  border-top: 4px solid #664315;
 }
 
 .contact-section h2 {
   font-family: "Playfair Display", serif;
   font-size: 32px;
   margin-bottom: 20px;
-  color: #0077cc;
+  color:  #664315;;
 }
 
 .contact-form {
