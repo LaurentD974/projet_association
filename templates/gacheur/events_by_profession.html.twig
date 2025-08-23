@@ -3,56 +3,83 @@
 {% block title %}Événements liés à votre métier{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1 class="mb-4">Événements pour le métier : {{ app.user.metier }}</h1>
+<div class="container py-4">
+  <h1 class="h4 text-primary mb-3">
+    Événements pour le métier : {{ app.user.metier ?? '—' }}
+  </h1>
 
-        {% if events is empty %}
-            <div class="alert alert-info">
-                Aucun événement trouvé pour votre métier.
-            </div>
-        {% else %}
-            <table class="table table-bordered table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Titre</th>
-                        <th>Description</th>
-                        <th>Date</th>
-                        <th>Lieu</th>
-                        <th>Statut</th>
-                        <th>Inscrits</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for event in events %}
-                        <tr>
-                            <td>{{ event.title }}</td>
-                            <td>{{ event.description }}</td>
-                            <td>{{ event.startDate|date('d/m/Y H:i') }}</td>
-                            <td>{{ event.location }}</td>
-                            <td>
-                                {% if event.isValidated %}
-                                    <span class="badge bg-success">Validé</span>
-                                {% else %}
-                                    <span class="badge bg-warning text-dark">En attente</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if event.participants is empty %}
-                                    <em>Aucun inscrit</em>
-                                {% else %}
-                                    <ul class="list-unstyled mb-0">
-                                        {% for participant in event.participants %}
-                                            <li>{{ participant.nom ?? participant.prenom ?? participant.email }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
+  {% if events is empty %}
+    <div class="alert alert-info">Aucun événement trouvé pour votre métier.</div>
+  {% else %}
+    {# Tri côté template si besoin (préférez le contrôleur) #}
+    {% set items = events|sort((a,b) => a.startDate <=> b.startDate) %}
 
-        <a href="{{ path('gacheur_dashboard') }}" class="btn btn-secondary mt-3">← Retour au tableau de bord</a>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th scope="col">Titre</th>
+            <th scope="col" style="width:40%;">Description</th>
+            <th scope="col" class="text-nowrap">Date</th>
+            <th scope="col">Lieu</th>
+            <th scope="col" class="text-center">Statut</th>
+            <th scope="col" class="text-end">Inscrits</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for event in items %}
+            {% set desc = event.description is defined ? event.description|striptags : '' %}
+            {% set participants = event.participants is defined and event.participants is not empty ? event.participants : [] %}
+            <tr>
+              <td class="fw-semibold">{{ event.title }}</td>
+
+              <td>
+                <div class="text-truncate" style="max-width: 560px;">
+                  {{ desc|length > 160 ? desc|slice(0,160) ~ '…' : desc }}
+                </div>
+              </td>
+
+              <td class="text-nowrap">
+                <time datetime="{{ event.startDate ? event.startDate|date('c') : '' }}">
+                  {{ event.startDate ? event.startDate|date('d/m/Y H:i') : '—' }}
+                </time>
+              </td>
+
+              <td>{{ event.location ?? '—' }}</td>
+
+              <td class="text-center">
+                {% if event.isValidated %}
+                  <span class="badge bg-success">Validé</span>
+                {% else %}
+                  <span class="badge bg-warning text-dark">En attente</span>
+                {% endif %}
+              </td>
+
+              <td class="text-end">
+                {% if participants is empty %}
+                  <span class="text-muted">0</span>
+                {% else %}
+                  <div class="dropstart d-inline-block">
+                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      {{ participants|length }}
+                    </button>
+                    <ul class="dropdown-menu">
+                      {% for p in participants %}
+                        <li class="dropdown-item small">
+                          {{ (p.prenom ~ ' ' ~ p.nom)|trim ?: (p.email ?? '—') }}
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+  {% endif %}
+
+  <a href="{{ path('gacheur_dashboard') }}" class="btn btn-outline-secondary mt-3">← Retour au tableau de bord</a>
+</div>
 {% endblock %}

@@ -3,181 +3,96 @@
 
 {% block title %}Planning{% endblock %}
 
+{# === Styles nécessaires des librairies (pas de CSS perso) === #}
 {% block stylesheets %}
-  {# <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet"> #}
-  <style>
-    .fc-toolbar-title {
-      font-size: 1.5rem;
-      color: #2c3e50;
-    }
-    body {
-  background: linear-gradient(135deg, #b39f6b, #e8eaeb);
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-}
-    #calendar {
-      max-width: 900px;
-      margin: 20px auto;
-      background: #fff;
-      padding: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      border-radius: 8px;
-    }
-    .titre-planning {
-      text-align: center;
-      margin: 20px auto 10px 0;
-      font-size: 2rem;
-      color: black;
-      max-width: 900px;
-    }
-    .fc-event-time {
-      font-weight: bold;
-      font-size: 0.9rem;
-    }
-    .fc-event-title {
-      font-size: 0.85rem;
-      color: #f9f9f9;
-    }
-    .planning-actions {
-      max-width: 900px;
-      margin: 10px auto 0 auto;
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-    .planning-actions .btn {
-      padding: 6px 12px;
-  margin-top: 20px; /* ou plus selon le rendu souhaité */
-      font-size: 0.9rem;
-      border-radius: 6px;
-      text-decoration: none;
-    }
-    .btn-marron {
-  background-color: #8B4513;
-  color: white;
-  border: none;
-}
-
-.btn-marron:hover {
-  background-color: #A0522D;
-}
-
-
-  #newsCarousel {
-    max-width: 900px;
-    margin: 2px auto;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    overflow: hidden;
-  }
-
-  .carousel-item h4,
-  .carousel-item p {
-    margin: 0;
-    padding: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .carousel-item {
-    min-height: auto;
-  }
-.carousel-banner {
-  background-color: #f8f9fa;
-  padding: 4px 8px;
-  min-height: 60px;
-}
-
-
-.carousel-title,
-.carousel-content {
-  display: inline-block;
-  vertical-align: middle;
-  margin: 0;
-  font-size: 1rem;
-}
-
-
-.carousel-title {
-  color: brown;
-  font-weight: 600;
-}
-
-
-.carousel-content {
-  color: #333;
-  margin-left: 1cm; /* espace d’un centimètre entre titre et contenu */
-}
-
-
-
-  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light.css">
 {% endblock %}
 
 {% block body %}
-<div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
-  <!-- Indicateurs -->
-  <div class="carousel-indicators">
-    {% for news in news_list %}
-      <button type="button"
-              data-bs-target="#newsCarousel"
-              data-bs-slide-to="{{ loop.index0 }}"
-              class="{% if loop.first %}active{% endif %}"
-              aria-current="{% if loop.first %}true{% endif %}"
-              aria-label="Slide {{ loop.index }}">
+<div class="container py-4">
+
+  {# Bandeau "Actus" (optionnel si news_list vide) #}
+  {% if news_list is defined and news_list|length > 0 %}
+    <div id="newsCarousel" class="carousel slide mb-3" data-bs-ride="carousel" data-bs-interval="7000">
+      <div class="carousel-indicators">
+        {% for news in news_list %}
+          <button type="button"
+                  data-bs-target="#newsCarousel"
+                  data-bs-slide-to="{{ loop.index0 }}"
+                  class="{% if loop.first %}active{% endif %}"
+                  {% if loop.first %}aria-current="true"{% endif %}
+                  aria-label="Slide {{ loop.index }}"></button>
+        {% endfor %}
+      </div>
+
+      <div class="carousel-inner rounded shadow-sm">
+        {% for news in news_list %}
+          {% if news.title or news.content %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+              <div class="d-flex align-items-center gap-3 p-3 bg-light">
+                <h4 class="h6 text-primary m-0 text-truncate" style="max-width: 280px;">
+                  {{ news.title }}
+                </h4>
+                <p class="m-0 text-truncate" style="max-width: 100%;">
+                  {{ news.content }}
+                </p>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Précédent</span>
       </button>
-    {% endfor %}
+      <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Suivant</span>
+      </button>
+    </div>
+  {% endif %}
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+    <h2 class="h5 m-0">PLANNING DE L'ASSOCIATION</h2>
+
+    <div class="d-flex align-items-center gap-2">
+      <a href="{{ path('user_search') }}" class="btn btn-outline-primary">🔙 Trombinoscope</a>
+      <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
+
+      {% if app.user and ('ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles) %}
+        <a
+          href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}"
+          class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}">
+          {% if 'ROLE_ADMIN' in app.user.roles %}🛠️ Dashboard Admin{% else %}🎯 Dashboard Gâcheur{% endif %}
+        </a>
+      {% endif %}
+    </div>
   </div>
 
-  <!-- Slides -->
-  <div class="carousel-inner">
-    {% for news in news_list %}
-      {% if news.title or news.content %}
-      <div class="carousel-item {% if loop.first %}active{% endif %}">
-  <div class="carousel-banner px-4 py-2">
-    <h4 class="carousel-title mb-0 d-inline-block">{{ news.title }}</h4>
-    <p class="carousel-content mb-0 d-inline-block ms-4">{{ news.content }}</p>
+  <div class="card shadow-sm">
+    <div class="card-body p-2">
+      <div id="calendar"></div>
+    </div>
   </div>
 </div>
-      {% endif %}
-    {% endfor %}
-  </div>
-
- 
-
-  <div class="planning-actions">
-    <h2 class="titre-planning">PLANNING DE L'ASSOCIATION</h2>
-    <a href="{{ path('user_search') }}" class="btn btn-marron">🔙 Trombinoscope</a>
-    <a href="{{ path('home') }}" class="btn btn-marron">🏠 Accueil</a>
-    {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
-      <a 
-        href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
-        class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}"
-      >
-        {% if 'ROLE_ADMIN' in app.user.roles %}
-          🛠️ Dashboard Admin
-        {% else %}
-          🎯 Dashboard Gâcheur
-        {% endif %}
-      </a>
-    {% endif %}
-  </div>
-
-  <div id="calendar"></div>
 {% endblock %}
 
 {% block javascripts %}
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@6"></script>
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const calendarEl = document.getElementById('calendar');
+
       const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         locale: 'fr',
+        timeZone: 'Indian/Reunion',
         titleFormat: { year: 'numeric', month: 'long' },
         events: '/api/events',
         headerToolbar: {
@@ -185,51 +100,55 @@
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        eventContent: function(arg) {
+
+        // Rendu compact : FullCalendar gère déjà le style via sa CSS
+        eventContent(arg) {
           const timeEl = document.createElement('div');
-          timeEl.classList.add('fc-event-time');
           timeEl.textContent = arg.timeText;
-
           const titleEl = document.createElement('div');
-          titleEl.classList.add('fc-event-title');
           titleEl.textContent = arg.event.title;
-
           return { domNodes: [timeEl, titleEl] };
         },
-        eventDidMount: function(info) {
+
+        eventDidMount(info) {
           const e = info.event;
           const props = e.extendedProps;
 
-          let description = `
+          const start = info.event.start;
+          const dateStr = start ? start.toLocaleDateString('fr-FR') : '';
+
+          const html = `
             <strong>${e.title}</strong><br>
-            🕒 Heure : ${info.timeText}<br>
-            📅 Début : ${e.start.toLocaleString()}<br>
+            🕒 Heure : ${info.timeText || '—'}<br>
+            📅 Date : ${dateStr}<br>
             📍 Lieu : ${props.location || 'Non précisé'}<br>
             🏷️ Type : ${props.type || 'Non spécifié'}<br>
             📃 Description : ${props.description || 'Pas de description'}
           `;
+
           tippy(info.el, {
-            content: description,
+            content: html,
             allowHTML: true,
             theme: 'light',
             animation: 'fade',
             placement: 'top'
           });
         },
-        eventClick: function(info) {
+
+        eventClick(info) {
           const e = info.event;
           const props = e.extendedProps;
 
           const startDate = new Date(e.start);
           const endDate = new Date(startDate.getTime() + 4 * 60 * 60 * 1000);
 
-          const pad = v => v.toString().padStart(2, '0');
-          const formatGoogle = date =>
-            date.getUTCFullYear() +
-            pad(date.getUTCMonth() + 1) +
-            pad(date.getUTCDate()) + 'T' +
-            pad(date.getUTCHours()) +
-            pad(date.getUTCMinutes()) +
+          const pad = (v) => v.toString().padStart(2, '0');
+          const formatGoogle = (d) =>
+            d.getUTCFullYear() +
+            pad(d.getUTCMonth() + 1) +
+            pad(d.getUTCDate()) + 'T' +
+            pad(d.getUTCHours()) +
+            pad(d.getUTCMinutes()) +
             '00Z';
 
           const gStart = formatGoogle(startDate);
@@ -243,20 +162,22 @@
           const googleLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${gStart}/${gEnd}&details=${details}&location=${location}`;
           const outlookLink = `https://outlook.live.com/owa/?rru=addevent&subject=${title}&location=${location}&body=${details}&startdt=${startDate.toISOString()}&enddt=${endDate.toISOString()}`;
 
+          // Petit "modal" simplifié sans CSS perso
           const modal = document.createElement('div');
           modal.innerHTML = `
-            <div style="padding:20px; font-family: Arial, sans-serif;">
-                         <h3 style="margin-top:0;">${e.title}</h3>
-              <p><strong>Début :</strong> ${startDate.toLocaleDateString()}</p>
-              <p><strong>Fin :</strong> ${endDate.toLocaleString()}</p>
-              <p><strong>Lieu :</strong> ${props.location || 'Non renseigné'}</p>
-              <p><strong>Type :</strong> ${props.type || 'Non précisé'}</p>
-              <p><strong>Description :</strong> ${props.description || 'Pas de description'}</p>
-              <hr>
-              <p>
-                📆 <a href="${googleLink}" target="_blank">Ajouter à Google Agenda</a><br>
-                📧 <a href="${outlookLink}" target="_blank">Ajouter à Outlook</a>
-              </p>
+            <div class="card shadow" style="max-width:420px;">
+              <div class="card-body">
+                <h3 class="h5">${e.title}</h3>
+                <p class="mb-1"><strong>Début :</strong> ${startDate.toLocaleString('fr-FR')}</p>
+                <p class="mb-1"><strong>Fin :</strong> ${endDate.toLocaleString('fr-FR')}</p>
+                <p class="mb-1"><strong>Lieu :</strong> ${props.location || 'Non renseigné'}</p>
+                <p class="mb-1"><strong>Type :</strong> ${props.type || 'Non précisé'}</p>
+                <p class="mb-3"><strong>Description :</strong> ${props.description || 'Pas de description'}</p>
+                <div class="d-flex gap-2">
+                  <a class="btn btn-outline-primary btn-sm" href="${googleLink}" target="_blank" rel="noopener">Ajouter à Google</a>
+                  <a class="btn btn-outline-secondary btn-sm" href="${outlookLink}" target="_blank" rel="noopener">Ajouter à Outlook</a>
+                </div>
+              </div>
             </div>
           `;
           Object.assign(modal.style, {
@@ -264,29 +185,37 @@
             top: '20%',
             left: '50%',
             transform: 'translateX(-50%)',
-            background: '#fff',
-            border: '1px solid #ccc',
-            padding: '20px',
-            zIndex: 9999,
-            boxShadow: '0 0 20px rgba(0,0,0,0.2)',
-            borderRadius: '8px',
-            maxWidth: '400px',
+            zIndex: 1055,
           });
-          document.body.appendChild(modal);
 
-          document.addEventListener('click', function hideModal(ev) {
+          // Overlay Bootstrap-like
+          const backdrop = document.createElement('div');
+          Object.assign(backdrop.style, {
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,.5)',
+            zIndex: 1050,
+          });
+
+          document.body.append(backdrop, modal);
+
+          const closeAll = (ev) => {
             if (!modal.contains(ev.target)) {
               modal.remove();
-              document.removeEventListener('click', hideModal);
+              backdrop.remove();
+              document.removeEventListener('click', closeAll);
             }
-          });
+          };
+          setTimeout(() => document.addEventListener('click', closeAll), 0);
         },
+
         eventColor: '#27ae60',
         eventDisplay: 'block',
-        loading: function(isLoading) {
-          calendarEl.classList.toggle('loading', isLoading);
+        loading(isLoading) {
+          calendarEl.classList.toggle('opacity-50', isLoading);
         }
       });
+
       calendar.render();
     });
   </script>

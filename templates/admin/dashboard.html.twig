@@ -5,11 +5,16 @@
 {% block body %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{{ path('home') }}">🏠 Retour à l'accueil</a>
-    <div class="collapse navbar-collapse justify-content-end">
-      <ul class="navbar-nav">
+    <a class="navbar-brand" href="{{ path('home') }}">🏠 Accueil</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav" aria-controls="adminNav" aria-expanded="false" aria-label="Basculer la navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="adminNav">
+      <ul class="navbar-nav align-items-lg-center">
         <li class="nav-item">
-          <a class="btn btn-outline-light" href="{{ path('app_logout') }}">🔒 Se déconnecter</a>
+          <a class="btn btn-outline-light ms-lg-2" href="{{ path('app_logout') }}">🔒 Se déconnecter</a>
         </li>
       </ul>
     </div>
@@ -20,51 +25,79 @@
   <h1 class="mb-4 text-center text-primary">Tableau de bord PROVINCIAL</h1>
 
   <div class="row g-4">
-    <!-- Bloc Utilisateurs -->
-    <div class="col-md-3">
+    {# -- Gérer les utilisateurs -- #}
+    <div class="col-md-4">
       <div class="card shadow border-0 h-100">
-        <div class="card-body text-center">
-          <h5 class="card-title">👥 Gérer les utilisateurs</h5>
-          <p class="card-text">
-            <span class="badge bg-primary">Total : {{ totalUsers }}</span>
-            <span class="badge bg-info text-dark">Compagnons : {{ totalCompagnons }}</span>
-          </p>
+        <div class="card-body d-flex flex-column justify-content-between h-100">
+          <div>
+            <h5 class="card-title text-center">👥 Gérer les utilisateurs</h5>
+            <p class="card-text text-center">
+              <span class="badge bg-primary">Total : {{ totalUsers }}</span>
+              <span class="badge bg-info text-dark">Compagnons : {{ totalCompagnons }}</span>
+            </p>
 
-          <h6 class="mt-3">🛠️ Métiers :</h6>
-          <ul class="list-group list-group-flush text-start">
-            {% for metier, count in metierCounts %}
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ metier }}
-                <span class="badge bg-secondary">{{ count }}</span>
-              </li>
+            <h6 class="mt-2 text-center small">🛠️ Métiers :</h6>
+
+            {% if metierCounts|length > 0 %}
+              <div class="row row-cols-2 gx-1 gy-1">
+                {% for metier, count in metierCounts %}
+                  <div class="col">
+                    <div class="border rounded px-2 py-1 text-center bg-light">
+                      <div class="text-truncate small">{{ metier }}</div>
+                      <div class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ count }}</div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
             {% else %}
-              <li class="list-group-item text-muted">Aucun métier renseigné</li>
-            {% endfor %}
-          </ul>
+              <p class="text-muted text-center small">Aucun métier renseigné</p>
+            {% endif %}
+          </div>
 
-          <a href="/admin" class="btn btn-primary mt-3">Accéder</a>
+          <div class="d-flex justify-content-between mt-3">
+            <a href="{{ path('admin_import_csv') }}" class="btn btn-outline-secondary">📥 Importer CSV</a>
+            <a href="/admin" class="btn btn-primary">Accéder</a>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Bloc Événements -->
-    <div class="col-md-3">
+    {# -- Gérer les événements -- #}
+    <div class="col-md-5">
       <div class="card shadow border-0 h-100">
-        <div class="card-body text-center">
+        <div class="card-body text-center d-flex flex-column h-100">
           <h5 class="card-title">📅 Gérer les événements</h5>
+
+          {% if upcomingEvents is defined and upcomingEvents|length > 0 %}
+            <div class="mb-3 text-start">
+              <h6 class="text-muted">Événements à venir (2 mois) :</h6>
+              <ul class="list-unstyled small mb-0">
+                {% for event in upcomingEvents %}
+                  <li>
+                    <strong>{{ event.startDate|date('d/m/Y') }}</strong> — {{ event.type }} à {{ event.location }}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% else %}
+            <p class="text-muted small mb-3">Aucun événement prévu dans les 2 mois à venir.</p>
+          {% endif %}
+
           <p class="card-text">
             <span class="badge bg-success">{{ pendingCount }} à valider</span>
             <span class="badge bg-primary">{{ totalCount }} au total</span>
           </p>
-          <div class="d-grid gap-2">
+
+          <div class="d-grid gap-2 mt-auto">
             <a href="{{ path('admin_events_validate') }}" class="btn btn-success">✅ À valider</a>
             <a href="{{ path('admin_events_list') }}" class="btn btn-outline-primary">📋 Tous les événements</a>
           </div>
         </div>
       </div>
     </div>
- <!-- 🔍 Voir le trombinoscope -->
-    <div class="col-md-3">
+
+    {# -- Trombinoscope + Actualités -- #}
+    <div class="col-md-3 d-flex flex-column gap-4">
       <div class="card shadow border-0 h-100">
         <div class="card-body text-center d-flex flex-column h-100">
           <div>
@@ -74,14 +107,14 @@
           <a href="{{ path('user_search') }}" class="btn btn-primary mt-auto">Accéder</a>
         </div>
       </div>
-    </div>
-    <!-- Bloc Actualités -->
-    <div class="col-md-3">
+
       <div class="card shadow border-0 h-100">
-        <div class="card-body text-center">
-          <h5 class="card-title">📰 Gérer les actualités</h5>
-          <p class="card-text">Créer et publier des nouvelles sur le site.</p>
-          <a href="{{ path('admin_news_index') }}" class="btn btn-warning">Accéder</a>
+        <div class="card-body text-center d-flex flex-column h-100">
+          <div>
+            <h5 class="card-title">📰 Gérer les actualités</h5>
+            <p class="card-text">Créer et publier des nouvelles sur le site.</p>
+          </div>
+          <a href="{{ path('admin_news_index') }}" class="btn btn-warning mt-auto">Accéder</a>
         </div>
       </div>
     </div>

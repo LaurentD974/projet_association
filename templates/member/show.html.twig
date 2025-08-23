@@ -5,71 +5,157 @@
 {% block body %}
 <div class="container my-5">
 
-  <div class="member-header2">
-    <h1 class="member-title2">Profil de {{ member.nom }} {{ member.prenom }}</h1>
-    <div class="member-actions">
+  {# Titre + actions #}
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-4">
+    <h1 class="h4 m-0">Profil de {{ member.prenom }} {{ member.nom }}</h1>
+
+    <div class="d-flex flex-wrap gap-2">
       <a href="{{ path('user_search') }}" class="btn btn-outline-primary">🔙 Trombinoscope</a>
       <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
-      {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
-        <a 
-          href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
+
+      {% if app.user and ('ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles) %}
+        <a
+          href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}"
           class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}"
         >
-          {% if 'ROLE_ADMIN' in app.user.roles %}
-            🛠️ Dashboard Admin
-          {% else %}
-            🎯 Dashboard Gâcheur
-          {% endif %}
+          {% if 'ROLE_ADMIN' in app.user.roles %}🛠️ Dashboard Admin{% else %}🎯 Dashboard Gâcheur{% endif %}
         </a>
       {% endif %}
     </div>
   </div>
 
-  <div class="member-card2 d-flex flex-wrap gap-4">
-    <div class="member-info2 flex-grow-1">
-      <h2>{{ member.nom }} {{ member.prenom }}</h2>
-      <p><strong>Métier :</strong> {{ member.metier }}</p>
-      <p><strong>Gâche(s) :</strong> {{ member.fonction1 }} {{ member.fonction2 }}</p>
-      <p><strong>État :</strong> {{ member.statut }} {{ member.position }}</p>
-      <p><strong>Nom de province :</strong> {{ member.nomprovince }} {{ member.nomcompagnon }}</p> 
-      <p><strong>Téléphone :</strong> {{ member.telephone }}</p>
-      <p><strong>Email :</strong> ✉️ <a href="mailto:{{ member.email }}">{{ member.email }}</a></p>
-      {% if member.passetemps is not null %}
-        <p><strong>Passe temps :</strong> {{ member.passetemps }}</p>
-      {% endif %}
-      <p><strong>Adresse :</strong> {{ member.adresse1 }}</p>
-      <p><strong>Complément :</strong> {{ member.adresse2 }}</p>
-      <p><strong>Code postal :</strong> {{ member.codepostale }}</p>
-      <p><strong>Ville :</strong> {{ member.ville }}</p>
-      
-      {% if member.entreprise %}
-        <p><strong>Embauche :</strong>
-          <a href="{{ path('entreprise_show', { id: member.entreprise.id }) }}">
-            {{ member.entreprise.nom }}
-          </a>
-        </p>
-      {% else %}
-        <p><strong>Entreprise :</strong> Non attribuée</p>
-      {% endif %}
+  <div class="row g-4">
+    {# Colonne photo #}
+    <div class="col-12 col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="ratio ratio-1x1">
+          {% if member.photo %}
+            <img
+              src="{{ asset('uploads/photos/' ~ member.photo) }}"
+              alt="Photo de {{ member.nom }} {{ member.prenom }}"
+              class="w-100 h-100 rounded-top"
+              style="object-fit:cover"
+              onerror="this.onerror=null;this.src='{{ asset('image/default-avatar.png') }}';"
+            >
+          {% else %}
+            <img
+              src="{{ asset('image/default-avatar.png') }}"
+              alt="Photo par défaut de {{ member.nom }} {{ member.prenom }}"
+              class="w-100 h-100 rounded-top"
+              style="object-fit:cover"
+            >
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <h2 class="h5 mb-1">{{ member.prenom }} {{ member.nom }}</h2>
+          {% if member.metier %}
+            <div class="text-muted small mb-2"><i class="bi bi-tools me-1"></i>{{ member.metier }}</div>
+          {% endif %}
 
-      {% if member.dateArrivee is not null %}
-        <p><strong>Date d'arrivée :</strong> {{ member.dateArrivee|date('d/m/Y') }}</p>
-      {% endif %}
-
-      {% if member.dateDepart is not null %}
-        <p><strong>Date de départ :</strong> {{ member.dateDepart|date('d/m/Y') }}</p>
-      {% endif %}
+          {# Badges état/position si présents #}
+          <div class="d-flex flex-wrap gap-2">
+            {% if member.statut %}
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ member.statut }}</span>
+            {% endif %}
+            {% if member.position %}
+              <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">{{ member.position }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="member-photo2">
-      {% if member.photo %}
-        <img src="{{ asset('uploads/photos/' ~ member.photo) }}"
-             alt="Photo de {{ member.nom }} {{ member.prenom }}"
-             onerror="this.onerror=null;this.src='{{ asset('image/default-avatar.png') }}';">
-      {% else %}
-        <img src="{{ asset('image/default-avatar.png') }}"
-             alt="Photo par défaut de {{ member.nom }} {{ member.prenom }}">
-      {% endif %}
+    {# Colonne infos #}
+    <div class="col-12 col-md-8">
+      <div class="card shadow-sm h-100">
+        <div class="card-header">
+          <strong>Informations</strong>
+        </div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush">
+
+            {% if member.fonction1 or member.fonction2 %}
+              <div class="list-group-item">
+                <div class="fw-semibold">Gâche(s)</div>
+                <div class="small text-body-secondary">
+                  {{ member.fonction1|default('') }} {{ member.fonction2|default('') }}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if member.nomprovince or member.nomcompagnon %}
+              <div class="list-group-item">
+                <div class="fw-semibold">Nom de province</div>
+                <div class="small text-body-secondary">
+                  {{ member.nomprovince|default('') }} {{ member.nomcompagnon|default('') }}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if member.telephone %}
+              <div class="list-group-item">
+                <div class="fw-semibold">Téléphone</div>
+                <div class="small"><a href="tel:{{ member.telephone }}">{{ member.telephone }}</a></div>
+              </div>
+            {% endif %}
+
+            {% if member.email %}
+              <div class="list-group-item">
+                <div class="fw-semibold">Email</div>
+                <div class="small">
+                  ✉️ <a href="mailto:{{ member.email }}">{{ member.email }}</a>
+                </div>
+              </div>
+            {% endif %}
+
+            {% if member.passetemps is not null %}
+              <div class="list-group-item">
+                <div class="fw-semibold">Passe-temps</div>
+                <div class="small text-body-secondary">{{ member.passetemps }}</div>
+              </div>
+            {% endif %}
+
+            {% if member.adresse1 or member.adresse2 or member.codepostale or member.ville %}
+              <div class="list-group-item">
+                <div class="fw-semibold">Adresse</div>
+                <div class="small text-body-secondary">
+                  {{ member.adresse1|default('') }}{% if member.adresse1 and (member.adresse2 or member.codepostale or member.ville) %}<br>{% endif %}
+                  {{ member.adresse2|default('') }}{% if member.adresse2 and (member.codepostale or member.ville) %}<br>{% endif %}
+                  {{ member.codepostale|default('') }} {{ member.ville|default('') }}
+                </div>
+              </div>
+            {% endif %}
+
+            <div class="list-group-item">
+              <div class="fw-semibold">Entreprise</div>
+              <div class="small">
+                {% if member.entreprise %}
+                  <a href="{{ path('entreprise_show', { id: member.entreprise.id }) }}">
+                    {{ member.entreprise.nom }}
+                  </a>
+                {% else %}
+                  <span class="text-body-secondary">Non attribuée</span>
+                {% endif %}
+              </div>
+            </div>
+
+            {% if member.dateArrivee is not null %}
+              <div class="list-group-item">
+                <div class="fw-semibold">Date d'arrivée</div>
+                <div class="small text-body-secondary">{{ member.dateArrivee|date('d/m/Y') }}</div>
+              </div>
+            {% endif %}
+
+            {% if member.dateDepart is not null %}
+              <div class="list-group-item">
+                <div class="fw-semibold">Date de départ</div>
+                <div class="small text-body-secondary">{{ member.dateDepart|date('d/m/Y') }}</div>
+              </div>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

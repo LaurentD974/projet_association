@@ -3,30 +3,24 @@
 {% block title %}Message envoyé{% endblock %}
 
 {% block body %}
-<header>
-  <div class="header-left">
-    <a href="https://www.compagnons-du-devoir.com/" target="_blank" rel="noopener">
-      <img
-        src="{{ asset('image/aocdtf-logo.svg') }}"
-        alt="Logo des Compagnons du Devoir"
-        class="logo"
-      />
-    </a>
+{% include '_partials/header.html.twig' %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body text-center p-4">
+          <div class="display-6 text-success mb-2">✅</div>
+          <h2 class="h4 text-primary mb-3">Merci pour votre message</h2>
+          <p class="lead mb-0">
+            Votre message a bien été envoyé au Provincial.<br>
+            Il vous répondra dans les meilleurs délais.
+          </p>
+          <a href="{{ path('home') }}" class="btn btn-secondary mt-4">
+            Retour à l'accueil
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="header-center">
-    <h1 class="site-title">
-      Association Ouvrière des Compagnons du Devoir et du Tour de France<br />
-      <span class="ile" aria-label="île">🏝️</span> Île de la Réunion
-      <span class="palmier" aria-label="Palmier">🌴</span>
-    </h1>
-  </div>
- 
-</header>
-<section class="contact-section">
-  <div class="container">
-    <h2>✅ Merci pour votre message</h2>
-    <p>Votre message a bien été envoyé au Provincial. Il vous répondra dans les meilleurs délais.</p>
-<a href="{{ path('home') }}" class="btn btn-secondary">Retour à l'accueil</a>
-  </div>
-</section>
+</div>
 {% endblock %}

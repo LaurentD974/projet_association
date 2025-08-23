@@ -3,74 +3,82 @@
 {% block title %}Modifier une entreprise{% endblock %}
 
 {% block body %}
-  <div class="container mt-5">
-    <h1 class="mb-4">✏️ Modifier une entreprise</h1>
+<div class="container py-4">
+  <h1 class="h4 text-primary mb-3">✏️ Modifier une entreprise</h1>
 
-    {{ form_start(form) }}
-
-    {# ✅ Flash de succès #}
-    {% for message in app.flashes('success') %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-
-    {# ❌ Erreurs globales du formulaire #}
-    {% for error in form_errors(form) %}
-      <div class="alert alert-danger">{{ error.message }}</div>
-    {% endfor %}
-
-    <div class="row g-4">
-      <div class="col-md-6">
-        <label class="form-label">🏢 Nom</label>
-        {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.nom) }}
-      </div>
-
-      <div class="col-md-6">
-        <label class="form-label">👤 Responsable</label>
-        {{ form_widget(form.responsable, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.responsable) }}
-      </div>
-
-      <div class="col-md-6">
-        <label class="form-label">📞 Téléphone</label>
-        {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.telephone) }}
-      </div>
-
-      <div class="col-md-6">
-        <label class="form-label">📧 Email</label>
-        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.email) }}
-      </div>
-
-      <div class="col-md-12">
-        <label class="form-label">📍 Adresse</label>
-        {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.adresse) }}
-      </div>
-
-      <div class="col-md-6">
-        <label class="form-label">🏙️ Ville</label>
-        {{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.ville) }}
-      </div>
-
-      <div class="col-md-6">
-        <label class="form-label">📮 Code postal</label>
-        {{ form_widget(form.code_postale, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.code_postale) }}
-      </div>
+  {# ✅ Flash de succès #}
+  {% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
     </div>
+  {% endfor %}
 
-    <div class="mt-4">
-      <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
-      <a href="{{ path('entreprise_index') }}" class="btn btn-secondary ms-2">↩️ Retour</a>
+  <div class="card shadow-sm">
+    <div class="card-body">
+      {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+
+        {# ❌ Erreurs globales du formulaire (affichage direct) #}
+        {{ form_errors(form) }}
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            {{ form_row(form.nom, {
+              label: 'Nom',
+              attr: { class:'form-control', placeholder:'Ex : Charpentes Océan Indien' }
+            }) }}
+          </div>
+
+          <div class="col-md-6">
+            {{ form_row(form.responsable, {
+              label: 'Responsable',
+              attr: { class:'form-control', placeholder:'Nom et prénom' }
+            }) }}
+          </div>
+
+          <div class="col-md-6">
+            {{ form_row(form.telephone, {
+              label: 'Téléphone',
+              attr: { class:'form-control', placeholder:'+262 …', autocomplete:'tel' }
+            }) }}
+          </div>
+
+          <div class="col-md-6">
+            {{ form_row(form.email, {
+              label: 'Email',
+              attr: { class:'form-control', placeholder:'contact@exemple.com', autocomplete:'email' }
+            }) }}
+          </div>
+
+          <div class="col-12">
+            {{ form_row(form.adresse, {
+              label: 'Adresse',
+              attr: { class:'form-control', placeholder:'N°, voie, complément' }
+            }) }}
+          </div>
+
+          <div class="col-md-6">
+            {{ form_row(form.ville, {
+              label: 'Ville',
+              attr: { class:'form-control', placeholder:'Ex : Saint-Denis' }
+            }) }}
+          </div>
+
+          <div class="col-md-6">
+            {{ form_row(form.code_postale, {
+              label: 'Code postal',
+              attr: { class:'form-control', placeholder:'97400', inputmode:'numeric', autocomplete:'postal-code' }
+            }) }}
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <a href="{{ path('entreprise_index') }}" class="btn btn-outline-secondary">↩️ Retour</a>
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+        </div>
+
+      {{ form_end(form) }}
     </div>
-
-    {{ form_rest(form) }}
-    {{ form_end(form) }}
   </div>
+</div>
 {% endblock %}

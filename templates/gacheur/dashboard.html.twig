@@ -5,27 +5,31 @@
 {% block body %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{{ path('home') }}">🏠 Retour à l'accueil</a>
-    <div class="collapse navbar-collapse justify-content-end">
+    <a class="navbar-brand" href="{{ path('home') }}">🏠 Accueil</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#gacheurNav" aria-controls="gacheurNav" aria-expanded="false" aria-label="Basculer la navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="gacheurNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="btn btn-outline-light" href="{{ path('app_logout') }}">🔒 Se déconnecter</a>
+          <a class="btn btn-outline-light ms-lg-2" href="{{ path('app_logout') }}">🔒 Se déconnecter</a>
         </li>
       </ul>
     </div>
   </div>
 </nav>
 
-<!-- SVG pour icône de succès -->
-<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+{# Icône de succès pour les alertes (optionnel) #}
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
   <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.97 11.03a.75.75 0 0 0 1.07 0l3.992-3.992a.75.75 0 0 0-1.06-1.06L7.5 9.439 5.53 7.47a.75.75 0 0 0-1.06 1.06l2.5 2.5z"/>
   </symbol>
 </svg>
 
-<div class="container">
-
-  <!-- ✅ Message flash de confirmation -->
+<div class="container py-4">
+  {# ✅ Flash succès #}
   {% for message in app.flashes('success') %}
     <div class="alert alert-success d-flex align-items-center" role="alert">
       <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Succès :">
@@ -35,36 +39,38 @@
     </div>
   {% endfor %}
 
-  <h1 class="mb-4 text-center" style="color: #664315;">Tableau de bord Maitre de métier</h1>
+  <h1 class="mb-4 text-center text-primary">Tableau de bord Maître de métier</h1>
 
   <div class="row g-4">
-   <!-- 📋 Événements de mon métier -->
+    {# 📋 Événements de mon métier #}
     <div class="col-md-3">
       <div class="card shadow border-0 h-100">
         <div class="card-body text-center d-flex flex-column h-100">
           <div>
             <h5 class="card-title">📋 Événements de mon métier</h5>
-            <p class="card-text">Voir les événements liés à votre métier et les inscrits pour chacun de ces évènements.</p>
+            <p class="card-text">Voir les événements liés à votre métier et les inscrits.</p>
           </div>
           <a href="{{ path('event_by_profession') }}" class="btn btn-secondary mt-auto">Consulter</a>
         </div>
       </div>
     </div>
-    <!-- 📅 Proposer un événement -->
+
+    {# 📅 Proposer un événement #}
     <div class="col-md-3">
       <div class="card shadow border-0 h-100">
         <div class="card-body text-center d-flex flex-column h-100">
           <div>
             <h5 class="card-title">📅 Proposer un événement</h5>
             <p class="card-text">Soumettez un événement au planning.</p>
-            <p class="card-text">Si c'est un évènement corporatif, il est automatiquement inscrit dans la catégorie de votre métier et apparaitra sur votre planning.</p>
-            <p class="card-text">Si c'est un évènement communautaire, il devra être validé par le provincial avant d'apparaitre sur le planning.</p>
+            <p class="card-text">Corporatif → inscrit dans votre catégorie automatiquement.</p>
+            <p class="card-text">Communautaire → validation du provincial requise.</p>
           </div>
           <a href="{{ path('event_propose') }}" class="btn btn-success mt-auto">Proposer</a>
         </div>
       </div>
     </div>
-     <!-- 📆 Voir le planning -->
+
+    {# 📆 Voir le planning #}
     <div class="col-md-3">
       <div class="card shadow border-0 h-100">
         <div class="card-body text-center d-flex flex-column h-100">
@@ -77,71 +83,72 @@
       </div>
     </div>
 
-    <!-- 🔍 Voir le trombinoscope -->
+    {# 🔍 Trombinoscope #}
     <div class="col-md-3">
       <div class="card shadow border-0 h-100">
         <div class="card-body text-center d-flex flex-column h-100">
           <div>
             <h5 class="card-title">🔍 Voir le trombinoscope</h5>
-            <p class="card-text">Consultez les membres de l'association.</p>
-            <p class="card-text">Compagnons, aspirants, apprentis.</p>
+            <p class="card-text">Consultez les membres : compagnons, aspirants, apprentis.</p>
             <p class="card-text">Itinérants et sédentaires.</p>
           </div>
           <a href="{{ path('user_search') }}" class="btn btn-primary mt-auto">Accéder</a>
         </div>
       </div>
     </div>
-<!-- 🏢 Gestion des entreprises -->
-<div class="col-md-3">
-  <div class="card shadow border-0 h-100">
-    <div class="card-body text-center d-flex flex-column h-100">
-      <div>
-        <h5 class="card-title">🏢 Gestion des entreprises</h5>
-        <p class="card-text">Créez une entreprise, modifiez ou supprimez celles existantes.</p>
-      </div>
-      <a href="{{ path('entreprise_index') }}" class="btn btn-warning mt-auto">Gérer</a>
-    </div>
-  </div>
-</div>
-   <!-- 🧑‍🔧 Gestion des embauches -->
-<div class="col-md-3">
-  <div class="card shadow border-0 h-100">
-    <div class="card-body text-center d-flex flex-column h-100">
-      <div>
-        <h5 class="card-title">🧑‍🔧 Gestion des embauches</h5>
-        <p class="card-text">Attribuer une entreprise aux itinérants et aux sédentaires.</p>
-      </div>
-      <a href="{{ path('gacheur_utilisateurs', { position: 'Itinérant' }) }}" class="btn btn-dark mt-auto">Accéder</a>
-    </div>
-  </div>
-</div>
 
-<!-- 🔗 Voir les associations référent ↔ utilisateur -->
-<div class="col-md-3">
-  <div class="card shadow border-0 h-100">
-    <div class="card-body text-center d-flex flex-column h-100">
-      <div>
-        <h5 class="card-title">🔗 Associations référent ↔ utilisateur</h5>
-        <p class="card-text">Consultez toutes les associations entre les membres et leurs référents.</p>
+    {# 🏢 Gestion des entreprises #}
+    <div class="col-md-3">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body text-center d-flex flex-column h-100">
+          <div>
+            <h5 class="card-title">🏢 Gestion des entreprises</h5>
+            <p class="card-text">Créer, modifier ou supprimer les entreprises.</p>
+          </div>
+          <a href="{{ path('entreprise_index') }}" class="btn btn-warning mt-auto">Gérer</a>
+        </div>
       </div>
-      <a href="{{ path('gacheur_referents_utilisateurs') }}" class="btn btn-outline-primary mt-auto">Voir la liste</a>
     </div>
-  </div>
-</div>
-<!-- 📋 Diffusion d'informations -->
-<div class="col-md-3">
-  <div class="card shadow border-0 h-100">
-    <div class="card-body text-center d-flex flex-column h-100">
-      <div>
-        <h5 class="card-title">📋 Diffuser une information par mail à ma corporation</h5>
-        <p class="card-text">Faire une relance pour les inscriptions à un évènement.</p>
-        <p class="card-text">Diffuser une NEWS à ma corporation.</p>
+
+    {# 🧑‍🔧 Gestion des embauches #}
+    <div class="col-md-3">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body text-center d-flex flex-column h-100">
+          <div>
+            <h5 class="card-title">🧑‍🔧 Gestion des embauches</h5>
+            <p class="card-text">Attribuer une entreprise aux itinérants/sédentaires.</p>
+          </div>
+          <a href="{{ path('gacheur_utilisateurs', { position: 'Itinérant' }) }}" class="btn btn-dark mt-auto">Accéder</a>
+        </div>
       </div>
-      <a href="{{ path('envoyer-email') }}" class="btn btn-outline-success mt-auto">Accéder</a>
     </div>
-  </div>
-</div>
-   
+
+    {# 🔗 Associations référent ↔ utilisateur #}
+    <div class="col-md-3">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body text-center d-flex flex-column h-100">
+          <div>
+            <h5 class="card-title">🔗 Associations référent ↔ utilisateur</h5>
+            <p class="card-text">Liste des associations membres ↔ référents.</p>
+          </div>
+          <a href="{{ path('gacheur_referents_utilisateurs') }}" class="btn btn-outline-primary mt-auto">Voir la liste</a>
+        </div>
+      </div>
+    </div>
+
+    {# 📋 Diffusion d'informations #}
+    <div class="col-md-3">
+      <div class="card shadow border-0 h-100">
+        <div class="card-body text-center d-flex flex-column h-100">
+          <div>
+            <h5 class="card-title">📋 Diffuser une information</h5>
+            <p class="card-text">Relance inscriptions / News à ma corporation.</p>
+          </div>
+          <a href="{{ path('envoyer-email') }}" class="btn btn-outline-success mt-auto">Accéder</a>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 {% endblock %}

@@ -3,30 +3,40 @@
 {% block title %}Associer un référent{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-success">🧭 Associer un Ancien (Référent) à un Itinérant</h2>
-        <a href="{{ path('gacheur_dashboard') }}" class="btn btn-outline-secondary">
-            ⬅️ Retour au Tableau de bord
-        </a>
-    </div>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 text-success m-0">🧭 Associer un Ancien (Référent) à un Itinérant</h2>
+    <a href="{{ path('gacheur_dashboard') }}" class="btn btn-outline-secondary">
+      ⬅️ Retour au Tableau de bord
+    </a>
+  </div>
 
-    <div class="card shadow border-0">
-        <div class="card-body">
-            {{ form_start(form) }}
-            <div class="row g-4">
-                <div class="col-md-6">
-                    {{ form_row(form.referent) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.responsableDe) }}
-                </div>
-            </div>
-            <div class="text-end mt-4">
-                <button class="btn btn-success">💾 Enregistrer</button>
-            </div>
-            {{ form_end(form) }}
+  <div class="card shadow border-0">
+    <div class="card-body">
+      {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+        {{ form_errors(form) }}
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            {{ form_row(form.referent, {
+              label: 'Ancien (Référent)',
+              
+            }) }}
+          </div>
+          <div class="col-md-6">
+            {{ form_row(form.responsableDe, {
+              label: 'Itinérant',
+             
+            }) }}
+          </div>
         </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <a href="{{ path('gacheur_referents_utilisateurs') }}" class="btn btn-outline-secondary">Annuler</a>
+          <button type="submit" class="btn btn-success">💾 Enregistrer</button>
+        </div>
+      {{ form_end(form) }}
     </div>
+  </div>
 </div>
 {% endblock %}

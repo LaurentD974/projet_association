@@ -3,69 +3,77 @@
 {% block title %}Itinérants ↔ Anciens{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
+<div class="container py-4">
 
-  <!-- 🔙 Bouton retour -->
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="text-success">🔗 Associations Itinérants ↔ Anciens référents </h2>
+    <h2 class="h4 text-success m-0">🔗 Associations Itinérants ↔ Anciens référents</h2>
     <a href="{{ path('gacheur_dashboard') }}" class="btn btn-outline-primary">
       📊 Retour au tableau de bord
     </a>
   </div>
 
-  <!-- ✅ Flash messages -->
+  {# ✅ Flash succès #}
   {% for message in app.flashes('success') %}
-    <div class="alert alert-success d-flex align-items-center" role="alert">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
       ✅ {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
     </div>
   {% endfor %}
 
-  <!-- ➕ Bouton pour créer une association -->
   <div class="text-end mb-3">
     <a href="{{ path('associer_referent') }}" class="btn btn-primary">
       ➕ Associer un nouveau référent
     </a>
   </div>
 
-  <!-- 📋 Tableau des associations -->
   <div class="card shadow border-0">
     <div class="card-body">
-      <table class="table table-hover align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Itinérant</th>
-            <th>Ancien Référent</th>
-            <th class="text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for association in associations %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
             <tr>
-              <td>
-                {{ association.responsableDe.prenom }} {{ association.responsableDe.nom }}
-              </td>
-              <td>
-                {{ association.referent.prenom }} {{ association.referent.nom }}
-              </td>
-              <td class="text-center">
-                <a href="{{ path('modifier_association', { id: association.id }) }}" class="btn btn-sm btn-outline-success me-2">
-                  🖊️ Modifier
-                </a>
-                <form method="post" action="{{ path('supprimer_association', { id: association.id }) }}"
-                      style="display:inline-block;" onsubmit="return confirm('Confirmer la suppression ?');">
-                  <input type="hidden" name="_token" value="{{ csrf_token('delete_association_' ~ association.id) }}">
-                  <button class="btn btn-sm btn-outline-danger">🗑️ Supprimer</button>
-                </form>
-              </td>
+              <th scope="col">Itinérant</th>
+              <th scope="col">Ancien référent</th>
+              <th scope="col" class="text-center">Actions</th>
             </tr>
-          {% else %}
-            <tr>
-              <td colspan="3" class="text-center text-muted">Aucune association trouvée.</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {% for association in associations %}
+              <tr>
+                <td>
+                  {{ association.responsableDe.prenom ?? '' }} {{ association.responsableDe.nom ?? '' }}
+                </td>
+                <td>
+                  {{ association.referent.prenom ?? '' }} {{ association.referent.nom ?? '' }}
+                </td>
+                <td class="text-center">
+                  <div class="btn-group" role="group" aria-label="Actions">
+                    <a href="{{ path('modifier_association', { id: association.id }) }}"
+                       class="btn btn-sm btn-outline-success" title="Modifier">🖊️ Modifier</a>
+
+                    <form method="post"
+                          action="{{ path('supprimer_association', { id: association.id }) }}"
+                          class="d-inline"
+                          onsubmit="return confirm('Confirmer la suppression ?');">
+                      <input type="hidden" name="_token" value="{{ csrf_token('delete_association_' ~ association.id) }}">
+                      {# Décommentez si la route exige DELETE :
+                      <input type="hidden" name="_method" value="DELETE">
+                      #}
+                      <button class="btn btn-sm btn-outline-danger" title="Supprimer">🗑️ Supprimer</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="3" class="text-center text-muted py-4">Aucune association trouvée.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
+
 </div>
 {% endblock %}

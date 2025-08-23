@@ -1,128 +1,198 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<header class="search-header">
-  <h1 class="search-title">Trombinoscope</h1>
-  <div class="search-actions">
-    <a href="{{ path('app_profile') }}" class="btn btn-warning">Modifier mon profil</a>
-    <a href="{{ path('app_planning') }}" class="btn btn-primary">Voir le planning</a>
-    <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
-    <a href="{{ path('app_logout') }}" class="btn btn-danger">Se déconnecter</a>
-    {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
-      <a 
-        href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
-        class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}"
-      >
-        {% if 'ROLE_ADMIN' in app.user.roles %}
-          🛠️ Dashboard Admin
-        {% else %}
-          🎯 Dashboard Gâcheur
-        {% endif %}
-      </a>
-    {% endif %}
+<div class="container py-4">
+
+  {# Ligne 1 : Titre + boutons à droite #}
+  <div class="d-flex align-items-center mb-2">
+    <h1 class="h3 m-0 me-3">Trombinoscope</h1>
+    <div class="ms-auto d-flex flex-wrap gap-2">
+      <a href="{{ path('app_profile') }}" class="btn btn-warning">Modifier mon profil</a>
+      <a href="{{ path('app_planning') }}" class="btn btn-primary">Voir le planning</a>
+      <a href="{{ path('home') }}" class="btn btn-outline-secondary">🏠 Accueil</a>
+      <a href="{{ path('app_logout') }}" class="btn btn-danger">Se déconnecter</a>
+      {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
+        <a href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}"
+           class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}">
+          {% if 'ROLE_ADMIN' in app.user.roles %}🛠️ Dashboard Admin{% else %}🎯 Dashboard Gâcheur{% endif %}
+        </a>
+      {% endif %}
+    </div>
   </div>
-</header>
 
-<h2>Recherche dynamique des membres</h2>
-
-<form id="filter-form" style="margin-bottom: 20px;">
-  <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-    <select name="metier" id="metier-select" class="form-select" style="width: 200px;">
-      <option value="">Tous les métiers</option>
-    </select>
-
-    <select name="ville" id="ville-select" class="form-select" style="width: 200px;">
-      <option value="">Toutes les villes</option>
-    </select>
-
-    <select name="fonction" id="fonction-select" class="form-select" style="width: 200px;">
-      <option value="">Toutes les fonctions</option>
-    </select>
-
-    <span id="result-count" style="font-weight: bold; margin-left: 10px;">
-      0 résultat(s)
-    </span>
+  {# Ligne 2 : Barre de recherche #}
+  <div class="mb-3">
+    <input type="text" id="searchInput" class="form-control" placeholder="🔍 Recherche par nom ou prénom..." style="max-width: 340px">
   </div>
-</form>
 
-<div id="member-results" class="member-list">
-  <p>Les résultats s’afficheront ici...</p>
+  <h2 class="h5 mb-3">Recherche dynamique des membres</h2>
+
+  <form id="filter-form" class="mb-3">
+    <div class="row g-2 align-items-center">
+      <div class="col-12 col-sm-6 col-md-3">
+        <select name="metier" id="metier-select" class="form-select">
+          <option value="">Tous les métiers</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <select name="ville" id="ville-select" class="form-select">
+          <option value="">Toutes les villes</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <select name="fonction" id="fonction-select" class="form-select">
+          <option value="">Toutes les fonctions</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3 text-sm-end">
+        <span id="result-count" class="fw-bold">0 résultat(s)</span>
+      </div>
+    </div>
+  </form>
+
+  {# Cartes plus larges : max 4 par ligne en lg #}
+  <div id="member-results" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    <div class="col">
+      <div class="alert alert-info m-0">Les résultats s’afficheront ici...</div>
+    </div>
+  </div>
+
 </div>
+
+{# Styles locaux #}
+<style>
+/* Base neutre : on remplace shadow-sm par une ombre douce */
+.card.member-card,
+.card.member-card.shadow-sm {
+  box-shadow: 0 .15rem .55rem rgba(0,0,0,.08) !important;
+  transition: transform .22s cubic-bezier(.2,.8,.2,1),
+              box-shadow .22s cubic-bezier(.2,.8,.2,1);
+  will-change: transform, box-shadow;
+}
+
+/* Survol : élévation + ombre plus dense (écrase Bootstrap) */
+.card.member-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 1.35rem 2.6rem rgba(0,0,0,.85) !important,
+    0 .8rem 1.6rem rgba(0,0,0,.42) !important;
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .card.member-card { transition: box-shadow .01s linear; }
+  .card.member-card:hover { transform: none; }
+}
+
+
+  .member-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 .35rem .85rem rgba(0,0,0,.12);
+  }
+</style>
 {% endblock %}
 
 {% block javascripts %}
+{{ parent() }}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const metierSelect = document.getElementById('metier-select');
-  const villeSelect = document.getElementById('ville-select');
-  const fonctionSelect = document.getElementById('fonction-select');
-  const resultList = document.getElementById('member-results');
-  const resultCount = document.getElementById('result-count');
-  const form = document.getElementById('filter-form');
-  const photoBaseUrl = '{{ asset("uploads/photos") }}/';
+  const metierSelect  = document.getElementById('metier-select');
+  const villeSelect   = document.getElementById('ville-select');
+  const fonctionSelect= document.getElementById('fonction-select');
+  const resultList    = document.getElementById('member-results');
+  const resultCount   = document.getElementById('result-count');
+  const form          = document.getElementById('filter-form');
+  const searchInput   = document.getElementById('searchInput');
+
+  const photoBaseUrl     = '{{ asset("uploads/photos") }}/';
   const defaultAvatarUrl = '{{ asset("image/default-avatar.png") }}';
 
   fetch('/api/filters')
-    .then(response => response.json())
+    .then(r => r.json())
     .then(data => {
-      data.metiers.forEach(m => {
-        metierSelect.innerHTML += `<option value="${m}">${m}</option>`;
-      });
-      data.villes.forEach(v => {
-        villeSelect.innerHTML += `<option value="${v}">${v}</option>`;
-      });
-      data.fonctions.forEach(f => {
-        fonctionSelect.innerHTML += `<option value="${f}">${f}</option>`;
-      });
+      data.metiers?.forEach(m => metierSelect.insertAdjacentHTML('beforeend', `<option value="${m}">${m}</option>`));
+      data.villes?.forEach(v => villeSelect.insertAdjacentHTML('beforeend', `<option value="${v}">${v}</option>`));
+      data.fonctions?.forEach(f => fonctionSelect.insertAdjacentHTML('beforeend', `<option value="${f}">${f}</option>`));
     });
 
-  function fetchMembers() {
+  let allMembers = [];
+
+  function renderMembers(members){
+    resultList.innerHTML = '';
+
+    if (!members.length){
+      resultList.innerHTML = `
+        <div class="col"><div class="alert alert-info m-0">Aucun membre trouvé pour ces critères.</div></div>`;
+      resultCount.textContent = '0 résultat(s)';
+      return;
+    }
+
+const html = members.map(member => {
+  const safePrenom = (member.prenom ?? '').toString();
+  const safeNom    = (member.nom ?? '').toString();
+  const photo = member.photo && member.photo.trim() !== '' ? (photoBaseUrl + member.photo) : defaultAvatarUrl;
+
+  return `
+    <div class="col">
+      <div class="card h-100 shadow-sm member-card">
+        <div class="card-body d-flex flex-column align-items-center text-center">
+          <img src="${photo}" alt="Photo de ${safePrenom}"
+               class="member-avatar mb-2"
+               loading="lazy"
+               onerror="this.onerror=null;this.src='${defaultAvatarUrl}'">
+
+          <!-- Bloc contenu qui prend l'espace disponible -->
+          <div class="w-100 flex-grow-1">
+            <h6 class="card-title mb-1 text-truncate">${safePrenom} ${safeNom}</h6>
+            ${member.metier ? `<div class="small text-muted mb-1"><strong>Métier :</strong> ${member.metier}</div>` : ''}
+            <div class="small mb-1"><strong>État :</strong> ${member.statut ?? ''} ${member.position ?? ''}</div>
+            ${member.ville ? `<div class="small mb-1"><strong>Ville :</strong> ${member.ville}</div>` : ''}
+            ${member.fonction1?.trim() ? `<div class="small mb-1"><strong>Gâche :</strong> ${member.fonction1}</div>` : ''}
+            ${member.fonction2?.trim() ? `<div class="small mb-1"><strong>Gâche :</strong> ${member.fonction2}</div>` : ''}
+          </div>
+
+          <!-- Bouton poussé en bas -->
+          <a href="/member/show/${member.id}" class="btn btn-primary btn-sm w-100 mt-auto">
+            Voir le profil
+          </a>
+        </div>
+      </div>
+    </div>`;
+}).join('');
+
+
+    resultList.innerHTML = html;
+    resultCount.textContent = `${members.length} résultat(s)`;
+  }
+
+  function applySearchFilter(){
+    const q = (searchInput.value || '').toLowerCase();
+    const filtered = allMembers.filter(m => (`${m.prenom} ${m.nom}`.toLowerCase().includes(q)));
+    renderMembers(filtered);
+  }
+
+  function fetchMembers(){
     const params = new URLSearchParams(new FormData(form)).toString();
     fetch('/api/members?' + params)
-      .then(response => response.json())
+      .then(r => r.json())
       .then(data => {
-        resultList.innerHTML = '';
-        resultCount.textContent = `${data.length} résultat(s)`;
-
-        if (data.length === 0) {
-          resultList.innerHTML = '<p>Aucun membre trouvé pour ces critères.</p>';
-        } else {
-          data.forEach(member => {
-            let photoUrl = member.photo && member.photo.trim() !== ''
-              ? photoBaseUrl + member.photo
-              : defaultAvatarUrl;
-
-let cardHTML = `
-  <div class="member-card">
-    <div class="member-photo-container">
-      <img src="${photoUrl}" alt="Photo de ${member.prenom}" class="member-photo">
-    </div>
-    <div class="member-info">
-      <h2>${member.prenom} ${member.nom}</h2>
-      <p><strong>Métier :</strong> ${member.metier}</p>
-      <p><strong>État :</strong> ${member.statut} ${member.position}</p>
-      <p><strong>Ville :</strong> ${member.ville}</p>
-      ${member.fonction1 && member.fonction1.trim() !== '' ? `<p><strong>Gâche :</strong> ${member.fonction1}</p>` : ''}
-      ${member.fonction2 && member.fonction2.trim() !== '' ? `<p><strong>Gâche :</strong> ${member.fonction2}</p>` : ''}
-      <div class="card-footer">
-        <a href="/member/show/${member.id}" class="btn btn-primary">Voir le profil</a>
-      </div>
-    </div>
-  </div>
-`;
-            resultList.innerHTML += cardHTML;
-          });
-        }
+        data.sort((a,b) => (a.nom || '').localeCompare(b.nom || ''));
+        allMembers = data;
+        applySearchFilter();
       })
-      .catch(error => {
-        console.error('Erreur lors du chargement des membres :', error);
-        resultList.innerHTML = '<p>Une erreur est survenue. Veuillez réessayer.</p>';
+      .catch(err => {
+        console.error('Erreur lors du chargement des membres :', err);
+        resultList.innerHTML = `<div class="col"><div class="alert alert-danger m-0">Une erreur est survenue. Veuillez réessayer.</div></div>`;
         resultCount.textContent = '0 résultat(s)';
       });
   }
 
   fetchMembers();
   form.addEventListener('change', fetchMembers);
+  searchInput.addEventListener('input', applySearchFilter);
 });
 </script>
 {% endblock %}

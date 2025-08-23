@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Repository\ReferentRepository;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class ProfileController extends AbstractController
 {
@@ -23,9 +24,9 @@ class ProfileController extends AbstractController
         EntityManagerInterface $em,
         SluggerInterface $slugger,
         UserPasswordHasherInterface $passwordHasher,
-        ReferentRepository $referentRepo
+        ReferentRepository $referentRepo,
+        #[CurrentUser] User $user
     ): Response {
-        $user = $this->getUser();
 
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour modifier votre profil.');

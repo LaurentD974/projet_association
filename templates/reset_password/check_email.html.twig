@@ -3,49 +3,29 @@
 {% block title %}Lien de réinitialisation envoyé{% endblock %}
 
 {% block body %}
-<header>
-  <div class="header-left">
-    <a href="https://www.compagnons-du-devoir.com/" target="_blank" rel="noopener">
-      <img
-        src="{{ asset('image/aocdtf-logo.svg') }}"
-        alt="Logo des Compagnons du Devoir"
-        class="logo"
-      />
-    </a>
-  </div>
-  <div class="header-center">
-    <h1 class="site-title">
-      Association Ouvrière des Compagnons du Devoir et du Tour de France<br />
-      <span class="ile" aria-label="île">🏝️</span> Île de la Réunion
-      <span class="palmier" aria-label="Palmier">🌴</span>
-    </h1>
-  </div>
- 
-</header>
-<div class="container mt-5">
+{% include '_partials/header.html.twig' %}
+
+<div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-md-8">
-
+    <div class="col-12 col-md-8 col-lg-6">
       <div class="card shadow-sm">
-        <div class="card-body text-center">
-        <img src="{{ asset('image/logo_province_reunion.png') }}" alt="Logo" width="100">
+        <div class="card-body text-center p-4">
+          <img src="{{ asset('image/logo_province_reunion.png') }}" alt="Logo" width="100" height="100" class="mb-3">
 
-          <h2 class="mb-4">📩 Email envoyé</h2>
+          <h2 class="h4 mb-3">📩 Email envoyé</h2>
 
           <p class="lead">
-            Si un compte correspondant à votre adresse email existe, un email contenant un lien pour réinitialiser votre mot de passe vient d'être envoyé.
+            Si un compte correspondant à votre adresse email existe, un email contenant un lien pour réinitialiser votre mot de passe vient d’être envoyé.
           </p>
 
-          <p class="text-muted">
-            Ce lien expirera dans une heure.<br>
-            Si vous ne recevez pas l’email, veuillez vérifier votre dossier de spam ou <a href="{{ path('app_forgot_password_request') }}">réessayer</a>.
+          <p class="text-muted mb-0">
+            Ce lien expirera dans une heure. Si vous ne recevez pas l’email, vérifiez votre dossier de spam ou
+            <a href="{{ path('app_forgot_password_request') }}">réessayez</a>.
           </p>
 
-          <a href="{{ path('app_login') }}" class="btn btn-primary mt-3">🔙 Retour à la connexion</a>
-
+          <a href="{{ path('app_login') }}" class="btn btn-primary mt-4">🔙 Retour à la connexion</a>
         </div>
       </div>
-
     </div>
   </div>
 </div>

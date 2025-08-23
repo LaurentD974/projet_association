@@ -1,9 +1,5 @@
-import { startStimulusApp } from '@symfony/stimulus-bridge';
-import { Controller } from '@hotwired/stimulus';
-const app = startStimulusApp(require.context(
-  './controllers',
-  true,
-  /\.(j|t)sx?$/
-));
-
-// app.register('your_controller_name', YourImportedController);
+Set-Content -Path assets/bootstrap.js -Value @"
+import { startStimulusApp } from '@symfony/stimulus-bundle';
+const app = startStimulusApp(import.meta.url);
+// Ex: app.register('hello', class extends Controller { ... });
+export default app;

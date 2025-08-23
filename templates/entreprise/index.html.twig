@@ -3,46 +3,63 @@
 {% block title %}Liste des entreprises{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-  <h2 class="mb-4 text-center text-primary">🏢 Liste des entreprises</h2>
+<div class="container py-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="h4 text-primary m-0">🏢 Liste des entreprises</h2>
+    <a href="{{ path('entreprise_new') }}" class="btn btn-success">➕ Ajouter une entreprise</a>
+  </div>
 
   {% for message in app.flashes('success') %}
-    <div class="alert alert-success">{{ message }}</div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
   {% endfor %}
 
-  <table class="table table-bordered table-hover">
-    <thead class="table-dark">
-      <tr>
-        <th>Nom</th>
-        <th>Responsable</th>
-        <th>Ville</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for entreprise in entreprises %}
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
         <tr>
-          <td>{{ entreprise.nom }}</td>
-          <td>{{ entreprise.responsable }}</td>
-          <td>{{ entreprise.ville }}</td>
-          <td>
-            <a href="{{ path('entreprise_edit', {id: entreprise.id}) }}" class="btn btn-sm btn-warning">✏️ Modifier</a>
-
-            <form method="post" action="{{ path('entreprise_delete', {id: entreprise.id}) }}" style="display:inline-block;" onsubmit="return confirm('Confirmer la suppression ?');">
-              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entreprise.id) }}">
-              <button class="btn btn-sm btn-danger">🗑️ Supprimer</button>
-            </form>
-          </td>
+          <th scope="col">Nom</th>
+          <th scope="col">Responsable</th>
+          <th scope="col">Ville</th>
+          <th scope="col" class="text-end">Actions</th>
         </tr>
-      {% else %}
-        <tr><td colspan="4" class="text-center">Aucune entreprise enregistrée.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {% for entreprise in entreprises %}
+          <tr>
+            <td class="fw-semibold">{{ entreprise.nom }}</td>
+            <td>{{ entreprise.responsable ?? '—' }}</td>
+            <td>{{ entreprise.ville ?? '—' }}</td>
+            <td class="text-end">
+              <div class="btn-group" role="group" aria-label="Actions">
+                <a href="{{ path('entreprise_edit', { id: entreprise.id }) }}" class="btn btn-sm btn-warning" title="Modifier">✏️</a>
 
-  <div class="mt-4">
+                <form method="post"
+                      action="{{ path('entreprise_delete', { id: entreprise.id }) }}"
+                      class="d-inline"
+                      onsubmit="return confirm('Confirmer la suppression de cette entreprise ?');">
+                  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entreprise.id) }}">
+                  {# Si la route exige DELETE :
+                  <input type="hidden" name="_method" value="DELETE">
+                  #}
+                  <button class="btn btn-sm btn-danger" title="Supprimer">🗑️</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="4" class="text-center text-muted py-4">Aucune entreprise enregistrée.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-3">
     <a href="{{ path('gacheur_dashboard') }}" class="btn btn-outline-secondary">⬅️ Retour au tableau de bord</a>
-    <a href="{{ path('entreprise_new') }}" class="btn btn-success float-end">➕ Ajouter une entreprise</a>
   </div>
 </div>
 {% endblock %}

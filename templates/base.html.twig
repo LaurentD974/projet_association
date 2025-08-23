@@ -1,159 +1,206 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Bienvenue!{% endblock %}</title>
-    <link rel="icon" type="image/png" href="{{ asset('image/favicon-aocdtf.png') }}">
+  <meta charset="UTF-8">
+  <title>{% block title %}Bienvenue!{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{{ asset('image/favicon-aocdtf.png') }}">
 
-    <script>
-        window.Turbo = { session: { drive: false } };
-    </script>
+  {# Importmap pour AssetMapper #}
+  {{ importmap() }}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/build/app.css">
+  {# CSS externes #}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    {% block stylesheets %}
-        {{ encore_entry_link_tags('app') }}
-    {% endblock %}
+  {# Branding minimal via variables Bootstrap (pas de fichier CSS) #}
+  <style>
+    :root { --bs-primary: #664315; }
+    body { min-height:100vh; }
+  </style>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  {% block stylesheets %}{% endblock %}
 
-    {% block javascripts %}
-        {{ encore_entry_script_tags('app') }}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
+  <script>
+    // Si Turbo est utilisé
+    window.Turbo = { session: { drive: false } };
+  </script>
+  {# base.html.twig — dans <head> après le <link> Bootstrap #}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  /* Palette + typographie */
+  :root{
+    --bs-primary:#664315;                 /* ta couleur */
+    --bs-primary-rgb:102,67,21;
+    --bs-link-color:#664315;
+    --bs-link-hover-color:#4a2f0d;
+    --bs-body-bg:#f7f6f3;
+    --bs-body-color:#1F2D3D;
+    --bs-heading-color:#18212b;
 
-        <script>
-            setTimeout(() => {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    alert.classList.remove('show');
-                });
-            }, 5000);
-        </script>
-    {% endblock %}
+    /* arrondis + ombres + bordures plus “soft” */
+    --bs-border-radius:.6rem;
+    --bs-border-radius-lg:1rem;
+    --bs-box-shadow:0 .25rem 1rem rgba(0,0,0,.08);
+  }
+
+  /* Police par défaut + titres */
+  body{ font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"; }
+  h1,h2,h3,h4,h5{ font-family: "Playfair Display", Georgia, serif; letter-spacing:.2px; }
+
+  /* Bouton primaire “marque” */
+  .btn-primary{
+    --bs-btn-bg:#664315;
+    --bs-btn-border-color:#5a3e15;
+    --bs-btn-hover-bg:#503614;
+    --bs-btn-hover-border-color:#472f12;
+    --bs-btn-active-bg:#3e270f;
+    --bs-btn-active-border-color:#3e270f;
+  }
+
+  /* Cartes plus élégantes */
+  .card{
+    --bs-card-border-color:#eadfd2;
+    --bs-card-cap-bg:#f4efe9;
+    box-shadow: var(--bs-box-shadow);
+  }
+
+  /* Badges “subtle” cohérents avec ta couleur */
+  .badge.bg-primary-subtle{
+    background-color: rgba(102,67,21,.10) !important;
+    color:#664315 !important;
+    border:1px solid rgba(102,67,21,.20) !important;
+  }
+
+  /* Table lisible + hover doux */
+  .table>:not(caption)>*>*{ padding:.65rem .75rem; }
+  .table-hover tbody tr:hover{ background:rgba(102,67,21,.06); }
+
+  /* Navbar sombre un peu moins “plate” (facultatif) */
+  .navbar-dark.bg-dark{ background:linear-gradient(180deg,#111418,#1a1f26); }
+</style>
+
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+  <main class="flex-grow-1">
     {% block body %}{% endblock %}
+  </main>
 
-    {% if not app.request.cookies.get('cookie_consent') %}
-        <div class="cookie-banner">
-            <p>Ce site utilise des cookies pour améliorer votre expérience. En continuant, vous acceptez leur utilisation.</p>
-            <button id="acceptCookies" class="btn btn-primary">Accepter</button>
-            <div id="cookie-confirmation" class="mt-2 text-success" style="display: none;">
-                Merci, vos préférences ont été enregistrées.
-            </div>
-        </div>
-
-        <script>
-            document.getElementById('acceptCookies').addEventListener('click', function () {
-                fetch('/accept-cookies', { method: 'POST' })
-                    .then(() => {
-                        document.getElementById('acceptCookies').style.display = 'none';
-                        document.querySelector('.cookie-banner p').style.display = 'none';
-                        document.getElementById('cookie-confirmation').style.display = 'block';
-                        setTimeout(() => {
-                            document.querySelector('.cookie-banner').style.display = 'none';
-                        }, 4000);
-                    });
-            });
-        </script>
-
-        <style>
-            .cookie-banner {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: #f8f9fa;
-                padding: 1rem;
-                text-align: center;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-                z-index: 9999;
-            }
-            body {
-                display: flex;
-                flex-direction: column;
-                min-height: 100vh;
-            }
-            main {
-                flex: 1;
-            }
-        </style>
-    {% endif %}
-{% set hide_footer = hide_footer|default(false) %}
-    {% if not hide_footer %}
-    <footer class="footer mt-5">
-        <div class="footer-content">
-            <p>&copy; 2025 AOCDTF - Île de la Réunion 🌴 | Tous droits réservés</p>
-            <p>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#legalModal">Mentions légales</a> |
-                <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Politique de confidentialité</a>
-            </p>
-            <div class="social-icons">
-                <a href="https://www.facebook.com/compagnonsdudevoir" target="_blank" rel="noopener noreferrer">
-                    <img src="{{ asset('image/facebook_logo_icon_257007.webp') }}" alt="Icône Facebook" />
-                </a>
-                <a href="https://www.instagram.com/les_compagnons/" target="_blank" rel="noopener noreferrer">
-                    <img src="{{ asset('image/instagram_icon.png.webp') }}" alt="Icône Instagram" />
-                </a>
-                <a href="https://www.linkedin.com/company/les-compagnons-du-devoir/?trk=biz-companies-cym" target="_blank" rel="noopener noreferrer">
-                    <img src="{{ asset('image/linkedin-icon.png') }}" alt="Icône LinkedIn" />
-                </a>
-                <a href="https://www.youtube.com/user/CompagnonsDevoir?sub_confirmation=1" target="_blank" rel="noopener noreferrer">
-                    <img src="{{ asset('image/Youtube-icon.webp') }}" alt="Icône YouTube" />
-                </a>
-                <a href="https://www.tiktok.com/@lescompagnonsdudevoir" target="_blank" rel="noopener noreferrer">
-                    <img src="{{ asset('image/tiktok-outline.svg') }}" alt="Icône TikTok" />
-                </a>
-                <a href="https://twitter.com/les_compagnons" target="_blank" rel="noopener noreferrer">
-                    <img src="{{ asset('image/icon-twitter.png') }}" alt="Icône Twitter" />
-                </a>
-            </div>
-        </div>
-    </footer>
-    {% endif %}
-
-    <!-- Modal Mentions légales -->
-    <div class="modal fade" id="legalModal" tabindex="-1" aria-labelledby="legalModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="legalModalLabel">Mentions légales</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Éditeur :</strong> Association Ouvrière des Compagnons du Devoir</p>
-                    <p><strong>Responsable de la publication :</strong> Le Provincial</p>
-                    <p><strong>Hébergement :</strong> OVH - 2 rue Kellermann, 59100 Roubaix</p>
-                    <p><strong>Contact :</strong> <a href="{{ path('contact_form') }}" class="btn">Formulaire de contact</a></p>
-                    <p><strong>RGPD :</strong> Ce site respecte la réglementation sur la protection des données personnelles.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                </div>
-            </div>
-        </div>
+  {% set hide_footer = hide_footer|default(false) %}
+  {% if not hide_footer %}
+  <footer class="mt-auto text-white text-center py-4" style="background-color:#664315;">
+    <div class="container">
+      <p class="mb-2">&copy; 2025 AOCDTF - Île de la Réunion 🌴 | Tous droits réservés</p>
+      <p class="mb-0">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#legalModal" class="text-white text-decoration-underline">Mentions légales</a> |
+        <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal" class="text-white text-decoration-underline">Politique de confidentialité</a> |
+        <a href="#" data-bs-toggle="modal" data-bs-target="#cookieModal" class="text-white text-decoration-underline">Modifier mes préférences de cookies</a>
+      </p>
+      <div class="d-flex justify-content-center gap-3 mt-3">
+        <a href="https://www.facebook.com/compagnonsdudevoir" target="_blank" class="text-white" aria-label="Facebook"><i class="fab fa-facebook-f fs-5"></i></a>
+        <a href="https://www.instagram.com/les_compagnons/" target="_blank" class="text-white" aria-label="Instagram"><i class="fab fa-instagram fs-5"></i></a>
+        <a href="https://twitter.com/les_compagnons" target="_blank" class="text-white" aria-label="Twitter"><i class="fab fa-twitter fs-5"></i></a>
+        <a href="https://www.linkedin.com/company/les-compagnons-du-devoir/" target="_blank" class="text-white" aria-label="LinkedIn"><i class="fab fa-linkedin-in fs-5"></i></a>
+        <a href="https://www.youtube.com/user/CompagnonsDevoir" target="_blank" class="text-white" aria-label="YouTube"><i class="fab fa-youtube fs-5"></i></a>
+        <a href="https://www.tiktok.com/@lescompagnonsdudevoir" target="_blank" class="text-white" aria-label="TikTok"><i class="fab fa-tiktok fs-5"></i></a>
+      </div>
     </div>
+  </footer>
+  {% endif %}
 
-    <!-- Modal Politique de confidentialité -->
-    <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="privacyModalLabel">Politique de confidentialité</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Nous collectons uniquement les données nécessaires au bon fonctionnement du site et à la gestion des demandes via le formulaire de contact.</p>
-                    <p>Aucune donnée n’est transmise à des tiers sans consentement explicite.</p>
-                    <p>Conformément au RGPD, vous pouvez exercer vos droits d’accès, de rectification ou de suppression en nous contactant : <strong><a href="{{ path('contact_form') }}" class="btn">Formulaire de contact</a></strong>.</p>
-                    <p>Ce site utilise des cookies techniques pour améliorer l’expérience utilisateur. Aucun cookie publicitaire n’est utilisé.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                </div>
-            </div>
+  {# Cookie banner Bootstrap-only #}
+  {% if not app.request.cookies.get('cookie_consent') %}
+    <div class="alert alert-light border shadow position-fixed bottom-0 start-0 end-0 m-0" role="alert" style="z-index:1080;">
+      <div class="container d-flex flex-column flex-sm-row align-items-center justify-content-between">
+        <p class="mb-2 mb-sm-0">Ce site utilise des cookies pour améliorer votre expérience.</p>
+        <div class="d-flex gap-2">
+          <button id="acceptCookies" class="btn btn-primary btn-sm">Accepter</button>
+          <button id="refuseCookies" class="btn btn-outline-secondary btn-sm">Refuser</button>
         </div>
+      </div>
     </div>
+    <script>
+      document.getElementById('acceptCookies')?.addEventListener('click', () => {
+        fetch('/accept-cookies', { method: 'POST' }).then(() => location.reload());
+      });
+      document.getElementById('refuseCookies')?.addEventListener('click', () => {
+        fetch('/refuse-cookies', { method: 'POST' }).then(() => location.reload());
+      });
+    </script>
+  {% endif %}
+
+  {# Modals #}
+  <div class="modal fade" id="legalModal" tabindex="-1" aria-labelledby="legalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="legalModalLabel">Mentions légales</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Éditeur :</strong> Association Ouvrière des Compagnons du Devoir</p>
+          <p><strong>Responsable de la publication :</strong> Le Provincial</p>
+          <p><strong>Hébergement :</strong> OVH - 2 rue Kellermann, 59100 Roubaix</p>
+          <p><strong>Contact :</strong> <a href="{{ path('contact_form') }}" class="btn btn-sm btn-outline-primary">Formulaire de contact</a></p>
+          <p><strong>RGPD :</strong> Ce site respecte la réglementation sur la protection des données personnelles.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="privacyModalLabel">Politique de confidentialité</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <p>Nous collectons uniquement les données nécessaires au bon fonctionnement du site et à la gestion des demandes via le formulaire de contact.</p>
+          <p>Aucune donnée n’est transmise à des tiers sans consentement explicite.</p>
+          <p>Conformément au RGPD, vous pouvez exercer vos droits via : <strong><a href="{{ path('contact_form') }}" class="btn btn-sm btn-outline-primary">Formulaire de contact</a></strong>.</p>
+          <p>Ce site utilise des cookies techniques. Aucun cookie publicitaire n’est utilisé.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="cookieModal" tabindex="-1" aria-labelledby="cookieModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content bg-light">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cookieModalLabel">Préférences de cookies</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <p>Vous pouvez modifier votre consentement à tout moment.</p>
+          <form method="post" action="{{ path('reset_cookies') }}">
+            <button type="submit" class="btn btn-danger">Réinitialiser mon choix</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# JS externes #}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  {# Entrée JS locale (AssetMapper) #}
+  {% block javascripts %}
+    <script type="module">import "app";</script>
+    <script>
+      setTimeout(() => document.querySelectorAll('.alert').forEach(a => a.classList.remove('show')), 5000);
+    </script>
+  {% endblock %}
 </body>
 </html>

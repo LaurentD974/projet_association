@@ -3,40 +3,46 @@
 {% block title %}Modifier l’actualité{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-warning text-dark">
-            <h4><i class="fas fa-edit me-2"></i>Modifier l’actualité</h4>
-        </div>
-        <div class="card-body">
-            {{ form_start(form) }}
-
-            <div class="mb-3">
-                <label class="form-label"><i class="fas fa-heading me-1"></i> Titre</label>
-                {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Titre de l’actualité'}}) }}
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label"><i class="fas fa-align-left me-1"></i> Contenu</label>
-                {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': '5', 'placeholder': 'Contenu mis à jour'}}) }}
-            </div>
-
-            <div class="form-check mb-3">
-                {{ form_widget(form.isPublished, {'attr': {'class': 'form-check-input'}}) }}
-                <label class="form-check-label"><i class="fas fa-eye me-1"></i> Accessible au public</label>
-            </div>
-
-            <div class="d-flex justify-content-between">
-                <button class="btn btn-success">
-                    <i class="fas fa-save me-1"></i> Enregistrer
-                </button>
-                <a href="{{ path('admin_news_index') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> Retour à la liste
-                </a>
-            </div>
-
-            {{ form_end(form) }}
-        </div>
+<div class="container py-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-warning text-dark">
+      <h4 class="h5 mb-0"><i class="fas fa-edit me-2"></i>Modifier l’actualité</h4>
     </div>
+
+    <div class="card-body">
+      {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+        {{ form_errors(form) }}
+
+        <div class="mb-3">
+          {{ form_row(form.title, {
+            label: 'Titre',
+            attr: { class: 'form-control', placeholder: 'Titre de l’actualité' }
+          }) }}
+        </div>
+
+        <div class="mb-3">
+          {{ form_row(form.content, {
+            label: 'Contenu',
+            attr: { class: 'form-control', rows: 5, placeholder: 'Contenu mis à jour' }
+          }) }}
+        </div>
+
+        <div class="form-check mb-3">
+          {{ form_widget(form.isPublished, { attr: { class: 'form-check-input' } }) }}
+          {{ form_label(form.isPublished, 'Accessible au public', { label_attr: { class: 'form-check-label' } }) }}
+          {{ form_errors(form.isPublished) }}
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <a href="{{ path('admin_news_index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+          </a>
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-1"></i> Enregistrer
+          </button>
+        </div>
+      {{ form_end(form) }}
+    </div>
+  </div>
 </div>
 {% endblock %}

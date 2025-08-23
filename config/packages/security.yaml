@@ -34,7 +34,7 @@ security:
 
     access_control:
     - { path: ^/$, roles: PUBLIC_ACCESS }                     # Page d’accueil
-    - { path: ^/reset-password, roles: PUBLIC_ACCESS }
+    - { path: ^/reset-password, roles: PUBLIC_ACCESS }        # Mot de passe oublié
     - { path: ^/login, roles: PUBLIC_ACCESS }                 # Connexion
     - { path: ^/logout, roles: PUBLIC_ACCESS }                # Déconnexion
     - { path: ^/contact, roles: PUBLIC_ACCESS }               # Toutes les pages sous /contact

@@ -3,38 +3,66 @@
 {% block title %}Fiche entreprise{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>🏢 Fiche de l'entreprise : {{ entreprise.nom }}</h2>
-    {% if app.user and 'ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
-      <a 
-        href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}" 
-        class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}"
-      >
-        {% if 'ROLE_ADMIN' in app.user.roles %}
-          🛠️ Dashboard Admin
-        {% else %}
-          🎯 Dashboard Gâcheur
-        {% endif %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 m-0">🏢 Fiche de l'entreprise : {{ entreprise.nom }}</h2>
+
+    {% if app.user and ('ROLE_GACHEUR' in app.user.roles or 'ROLE_ADMIN' in app.user.roles) %}
+      <a
+        href="{% if 'ROLE_ADMIN' in app.user.roles %}{{ path('admin_dashboard') }}{% else %}{{ path('gacheur_dashboard') }}{% endif %}"
+        class="btn {% if 'ROLE_ADMIN' in app.user.roles %}btn-dark{% else %}btn-success{% endif %}">
+        {% if 'ROLE_ADMIN' in app.user.roles %}🛠️ Dashboard Admin{% else %}🎯 Dashboard Gâcheur{% endif %}
       </a>
     {% endif %}
   </div>
 
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h5 class="card-title">{{ entreprise.nom }}</h5>
+  {# compat: certaines vues utilisent code_postale, d'autres codePostale #}
+  {% set codePostal = entreprise.code_postale is defined ? entreprise.code_postale : (entreprise.codePostale is defined ? entreprise.codePostale : null) %}
 
-      <p><strong>Responsable :</strong> {{ entreprise.responsable }}</p>
-      <p><strong>Adresse :</strong> {{ entreprise.adresse }}</p>
-      <p><strong>Code postal :</strong> {{ entreprise.codePostale }}</p>
-      <p><strong>Ville :</strong> {{ entreprise.ville }}</p>
-      <p><strong>Téléphone :</strong> 📞 {{ entreprise.telephone }}</p>
-      <p><strong>Email :</strong> ✉️ <a href="mailto:{{ entreprise.email }}">{{ entreprise.email }}</a></p>
+  <div class="card shadow-sm">
+    <div class="card-header bg-light">
+      <h5 class="h6 mb-0">{{ entreprise.nom }}</h5>
     </div>
+
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item d-flex justify-content-between">
+        <span class="fw-semibold">Responsable</span>
+        <span class="text-end">{{ entreprise.responsable ?? '—' }}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between">
+        <span class="fw-semibold">Adresse</span>
+        <span class="text-end">{{ entreprise.adresse ?? '—' }}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between">
+        <span class="fw-semibold">Code postal</span>
+        <span class="text-end">{{ codePostal ?? '—' }}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between">
+        <span class="fw-semibold">Ville</span>
+        <span class="text-end">{{ entreprise.ville ?? '—' }}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between">
+        <span class="fw-semibold">Téléphone</span>
+        <span class="text-end">
+          {% if entreprise.telephone %}
+            <a href="tel:{{ entreprise.telephone }}">{{ entreprise.telephone }}</a>
+          {% else %}—{% endif %}
+        </span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between">
+        <span class="fw-semibold">Email</span>
+        <span class="text-end">
+          {% if entreprise.email %}
+            ✉️ <a href="mailto:{{ entreprise.email }}">{{ entreprise.email }}</a>
+          {% else %}—{% endif %}
+        </span>
+      </li>
+    </ul>
   </div>
 
-  <div class="d-flex justify-content-end mt-4">
-    <a href="javascript:history.back()" class="btn btn-primary">↩️ Retour à la page précédente</a>
+  <div class="d-flex justify-content-between mt-3">
+    <a href="{{ path('entreprise_index') }}" class="btn btn-outline-secondary">↩️ Retour à la liste</a>
+    <a href="javascript:history.back()" class="btn btn-primary">Page précédente</a>
   </div>
 </div>
 {% endblock %}

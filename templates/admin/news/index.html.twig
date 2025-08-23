@@ -4,62 +4,78 @@
 {% block title %}Gestion des actualités{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3">📰 Gestion des actualités</h1>
-    <div class="d-flex gap-3">
-        <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-house-door"></i> Retour au tableau de bord
-        </a>
-        <a href="{{ path('admin_news_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Créer une nouvelle actualité
-        </a>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 m-0">📰 Gestion des actualités</h1>
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-house-door"></i> Tableau de bord
+      </a>
+      <a href="{{ path('admin_news_new') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nouvelle actualité
+      </a>
     </div>
-</div>
-</div>
+  </div>
 
-    {% if newsList is empty %}
-        <div class="alert alert-info text-center">
-            Aucune actualité trouvée.
-        </div>
-    {% else %}
-        <table class="table table-bordered table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Titre</th>
-                    <th>Contenu</th>
-                    <th>Créé le</th>
-                    <th>Publique</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for news in newsList %}
-                    <tr>
-                        <td>{{ news.id }}</td>
-                        <td>{{ news.title }}</td>
-                        <td>{{ news.content|length > 100 ? news.content[:100] ~ '...' : news.content }}</td>
-                        <td>{{ news.createdAt|date('d/m/Y') }}</td>
-                        <td>
-                            {% if news.published %}
-                                <span class="badge bg-success">Oui</span>
-                            {% else %}
-                                <span class="badge bg-secondary">Non</span>
-                            {% endif %}
-                        </td>
-                        <td class="d-flex gap-2">
-                            <a href="{{ path('admin_news_edit', {'id': news.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+  {% if newsList is empty %}
+    <div class="alert alert-info text-center mb-0">Aucune actualité trouvée.</div>
+  {% else %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Titre</th>
+            <th scope="col" style="width:40%">Contenu</th>
+            <th scope="col">Créé le</th>
+            <th scope="col" class="text-center">Public ?</th>
+            <th scope="col" class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for news in newsList %}
+            {# compat: certaines pages utilisent "isPublished", d'autres "published" #}
+            {% set isPublished = news.isPublished is defined ? news.isPublished : (news.published is defined ? news.published : false) %}
+            {% set excerpt = news.content is defined ? news.content|striptags : '' %}
 
-                            <form method="post" action="{{ path('admin_news_delete', {'id': news.id}) }}" onsubmit="return confirm('Supprimer cette actualité ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ news.id) }}">
-                                <button class="btn btn-sm btn-danger">Supprimer</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+            <tr>
+              <td class="text-muted">{{ news.id }}</td>
+              <td class="fw-semibold">{{ news.title }}</td>
+              <td>
+                <div class="text-truncate" style="max-width: 520px;">
+                  {{ excerpt|length > 120 ? excerpt|slice(0, 120) ~ '…' : excerpt }}
+                </div>
+              </td>
+              <td>{{ news.createdAt ? news.createdAt|date('d/m/Y') : '—' }}</td>
+              <td class="text-center">
+                {% if isPublished %}
+                  <span class="badge bg-success">Oui</span>
+                {% else %}
+                  <span class="badge bg-secondary">Non</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <div class="btn-group" role="group" aria-label="Actions">
+                  <a href="{{ path('admin_news_edit', { id: news.id }) }}"
+                     class="btn btn-sm btn-warning" title="Modifier">✏️</a>
+
+                  <form method="post"
+                        action="{{ path('admin_news_delete', { id: news.id }) }}"
+                        class="d-inline"
+                        onsubmit="return confirm('Supprimer cette actualité ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ news.id) }}">
+                    {# Décommente si ta route exige DELETE :
+                    <input type="hidden" name="_method" value="DELETE">
+                    #}
+                    <button class="btn btn-sm btn-danger" title="Supprimer">🗑️</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
 </div>
 {% endblock %}
