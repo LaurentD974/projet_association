@@ -1,0 +1,23 @@
+<header class="py-3" style="background-color:#664315;">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <a href="https://www.compagnons-du-devoir.com/" target="_blank" rel="noopener" class="text-decoration-none">
+        <img src="{{ asset('image/aocdtf-logo.svg') }}" alt="Logo des Compagnons du Devoir" class="img-fluid" style="height:120px">
+      </a>
+
+      <h1 class="h4 text-white text-center m-0 flex-grow-1">
+        Association Ouvrière des Compagnons du Devoir et du Tour de France<br>
+        <span aria-label="île">🏝️</span> Île de la Réunion <span aria-label="Palmier">🌴</span>
+      </h1>
+
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <a href="{{ path('contact_form') }}" class="btn btn-outline-light btn-sm">Contact</a>
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+          <a href="{{ path('app_logout') }}" class="btn btn-light btn-sm">Se déconnecter</a>
+        {% else %}
+          <a href="{{ path('app_login') }}" class="btn btn-light btn-sm">Se connecter</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,48 @@
+{# templates/admin/import_csv.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Importer des utilisateurs{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+  <div class="card shadow border-0">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">📥 Importer des utilisateurs via CSV</h4>
+    </div>
+
+    <div class="card-body">
+      {# Messages flash éventuels #}
+      {% for label, messages in app.flashes %}
+        {% for message in messages %}
+          <div class="alert alert-{{ label == 'error' ? 'danger' : (label == 'success' ? 'success' : 'info') }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+          </div>
+        {% endfor %}
+      {% endfor %}
+
+      <p class="text-muted mb-3">
+        Sélectionnez un fichier CSV contenant les utilisateurs à importer.
+        Assurez-vous que les colonnes et l’encodage sont corrects (UTF-8, séparateur « ; » ou « , »).
+      </p>
+
+      {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+        {{ form_errors(form) }}
+
+        <div class="mb-3">
+          {# Ajoute accept pour guider l’explorateur de fichiers #}
+          {{ form_row(form.csv_file, { attr: { accept: '.csv,text/csv' } }) }}
+          <div class="form-text">
+            Exemple de colonnes recommandées : <code>prenom</code>, <code>nom</code>, <code>email</code>, <code>metier</code>, <code>ville</code>, <code>telephone</code>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-success">✅ Importer</button>
+          <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">↩️ Retour au tableau de bord</a>
+        </div>
+      {{ form_end(form) }}
+    </div>
+  </div>
+</div>
+{% endblock %}
